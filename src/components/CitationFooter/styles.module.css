@@ -1,0 +1,30 @@
+.section {
+  padding: 3rem 1rem;
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+  margin-top: 3rem;
+}
+
+/* Single centered column: Cite vidax's code block, then Acknowledgments
+   stacked directly underneath -- Community was removed (its links already
+   live in the site footer's own Community column). Width matches the
+   1100px max-width used by the Showcase/Benchmark Explorer sections above
+   (see src/pages/index.module.css's .section) so this block doesn't look
+   narrower than the rest of the homepage. */
+.col {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.col h3 {
+  margin-top: 0;
+}
+
+.col h3:not(:first-child) {
+  margin-top: 1.5rem;
+}
+
+.ack {
+  font-size: 0.9rem;
+  opacity: 0.85;
+  margin-bottom: 0;
+}

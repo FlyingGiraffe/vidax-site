@@ -1,0 +1,26 @@
+# Canonical blog tag taxonomy, in two independent groups (see
+# src/theme/BlogListPage for how the sidebar splits them into a "Type" and
+# a "Content" filter group instead of one flat tag list):
+#
+# Type — what kind of writing this is:
+engineering-notes:
+  label: 'Engineering Notes'
+  description: >-
+    War stories from building vidax — debugging postmortems, design
+    tradeoffs, and the reasoning behind them.
+research:
+  label: 'Research'
+  description: >-
+    Papers and research directions built on or related to vidax.
+
+# Content — what subsystem the post is actually about:
+infrastructure:
+  label: 'Infrastructure'
+  description: >-
+    TPU sharding, JIT compilation, memory management, and other
+    systems-level engineering.
+modeling:
+  label: 'Modeling'
+  description: >-
+    Model architectures, precision/numerics, and correctness bugs specific
+    to a model family.

@@ -1,0 +1,101 @@
+.section {
+  padding: 0 1rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.tab,
+.tabActive {
+  padding: 0.6rem 1.1rem;
+  border: none;
+  background: none;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--ifm-color-emphasis-700);
+  border-bottom: 2px solid transparent;
+}
+
+.tabActive {
+  color: var(--ifm-color-primary);
+  border-bottom-color: var(--ifm-color-primary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+/* I2V clips are all portrait -- 4 narrower columns (2 rows for the current
+   5 clips; extra slots stay empty in the grid until more results land) so
+   each card's box matches the video instead of being padded like a 16:9
+   T2V card. */
+.gridPortrait {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .gridPortrait {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .gridPortrait {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--ifm-background-surface-color);
+}
+
+.video {
+  width: 100%;
+  display: block;
+  background: #000;
+  object-fit: cover;
+}
+
+.meta {
+  padding: 0.75rem 0.9rem;
+}
+
+.metaTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.modelName {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.resolution {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+.description {
+  font-size: 0.85rem;
+  opacity: 0.75;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}

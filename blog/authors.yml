@@ -1,0 +1,7 @@
+# TODO: replace with real author info (name, GitHub handle, avatar) before
+# publishing. Docusaurus blog posts reference an author by this file's keys
+# via front matter (`authors: [vidax-team]`).
+vidax-team:
+  name: vidax authors
+  title: vidax maintainers
+  url: https://github.com/FlyingGiraffe/vidax

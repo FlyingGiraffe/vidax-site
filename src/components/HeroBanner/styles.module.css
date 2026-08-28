@@ -1,0 +1,68 @@
+.hero {
+  padding: 4rem 1rem 3rem;
+  text-align: center;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ifm-color-primary) 10%, transparent) 0%,
+    transparent 100%
+  );
+}
+
+.heroInner {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+}
+
+.tagline {
+  font-size: 1.25rem;
+  opacity: 0.85;
+  margin-bottom: 2rem;
+}
+
+.buttonRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.pipRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  background: var(--ifm-background-surface-color);
+}
+
+.pipLabel {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ifm-color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pipCode {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: 2.2rem;
+  }
+}
