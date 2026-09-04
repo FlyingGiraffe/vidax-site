@@ -56,10 +56,17 @@
   border-radius: 12px;
 }
 
-/* Homepage: keep the table to a scrollable window instead of ~32 full
-   rows. The sticky <thead> (below) stays pinned while the body scrolls. */
+/* Keep the table to a scrollable window instead of ~32 full rows. The
+   sticky <thead> (below) stays pinned while the body scrolls.
+   `Compact` is the short homepage embed; `Page` is the taller cap on the
+   dedicated /benchmarks page. */
 .tableWrapCompact {
   max-height: 420px;
+  overflow-y: auto;
+}
+
+.tableWrapPage {
+  max-height: 640px;
   overflow-y: auto;
 }
 

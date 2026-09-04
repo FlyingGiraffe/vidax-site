@@ -1,170 +1,168 @@
 # vidax-site
 
-Marketing/docs website for [`vidax`](https://github.com/FlyingGiraffe/vidax), a
-JAX/Flax inference engine for video diffusion models. Built with
-[Docusaurus](https://docusaurus.io/) (TypeScript + React), deployed to GitHub
-Pages.
+Docs & showcase website for [`vidax`](https://github.com/FlyingGiraffe/vidax),
+a JAX/Flax inference engine and PyTorch→JAX weight translator for video
+diffusion models on TPU. Built with
+[Docusaurus 3](https://docusaurus.io/) (TypeScript + React), deployed to
+GitHub Pages at
+**<https://flyinggiraffe.github.io/vidax-site/>**.
 
 **This repo never edits `vidax/`.** It only *reads* from a sibling checkout
 of `vidax/` — model docs, benchmark result JSON, and sample output videos —
-and copies/transforms what it needs into `vidax-site/`. `vidax` is still
-under active development (Cosmos2.5/Wan2.1/Wan2.2 nearly done, Cosmos2.5
-benchmarking in progress, more model families coming), so this site's data
-snapshots will go stale — see [Keeping data in sync](#keeping-data-in-sync).
+and copies/transforms what it needs into `vidax-site/`. `vidax`'s first
+release (v0.1.0) covers ten model families, but its benchmark results and
+sample clips keep changing, so this site's data snapshots need manual
+re-sync — see [Keeping data in sync](#keeping-data-in-sync).
 
 ## Structure
 
-The homepage (`src/pages/index.tsx`) composes the five sections from the
-site spec:
+The homepage (`src/pages/index.tsx`) stacks:
 
 | Section | Component / page |
 | --- | --- |
-| Hero & Launch Bar | [`src/components/HeroBanner`](src/components/HeroBanner) |
-| Interactive Video Gallery | [`src/components/VideoGallery`](src/components/VideoGallery) (also at `/gallery`) |
-| Interactive Benchmark Explorer | [`src/components/BenchmarkExplorer`](src/components/BenchmarkExplorer) (also at `/benchmarks`) |
-| Structured API Documentation | [`docs/`](docs) (Docusaurus doc sidebar, see `sidebars.ts`) |
-| Community & Citation Footer | [`src/components/CitationFooter`](src/components/CitationFooter) |
+| Hero & launch bar | [`src/components/HeroBanner`](src/components/HeroBanner) |
+| Showcase (curated 3×3 T2V / 2×4 I2V preview + "Browse all" button) | [`src/components/VideoGallery`](src/components/VideoGallery) — full grid at `/gallery` |
+| Benchmark Explorer (compact scroll-capped embed) | [`src/components/BenchmarkExplorer`](src/components/BenchmarkExplorer) — full table at `/benchmarks` |
+| Acknowledgments footer (BibTeX block commented out until the arXiv report is up) | [`src/components/CitationFooter`](src/components/CitationFooter) |
 
-Plus a **Blog** ([`blog/`](blog), Docusaurus's built-in blog plugin at `/blog`)
-for lessons-learned writeups (model architectures, running them efficiently,
-future papers) — linked from the hero buttons, the top navbar (between
-Benchmarks and Gallery), and the footer.
+Docs live under [`docs/`](docs) (Docusaurus doc plugin, sidebar in
+`sidebars.ts`): **Getting Started**, **Model Family Guides** (one page per
+family), **Sharding & Topology**, and an **API Reference** for the reusable
+`vidax.core` / `vidax.schedulers` / `vidax.translator` building blocks.
+
+The **Blog** ([`blog/`](blog), Docusaurus blog plugin at `/blog`) carries
+the long-form engineering writeups, with a custom tag-split sidebar
+(`src/theme/BlogListPage`) that separates "type" tags (Engineering Notes /
+Research) from "content" tags (Infrastructure / Modeling).
 
 ```text
 vidax-site/
 ├── README.md
-├── package.json                 # npm scripts: start, build, deploy, gen-benchmarks
-├── docusaurus.config.ts         # site metadata, navbar, footer, GH Pages target
-├── sidebars.ts                  # doc sidebar: Getting Started / Model Guides / Sharding / Weight Bridge
+├── package.json                 # npm scripts: start, build, serve, typecheck, deploy, gen-benchmarks
+├── docusaurus.config.ts         # site metadata, navbar, footer, GH Pages target, navbar SVG strings
+├── sidebars.ts                  # doc sidebar: Getting Started / Model Family Guides / Sharding & Topology / API Reference
 ├── scripts/
 │   └── gen_benchmarks_data.py   # regenerates src/data/benchmarks.json from vidax/benchmarks/results/*.json
-├── blog/                        # Docusaurus blog (lessons learned, architectures, papers)
-│   ├── authors.yml               # TODO: replace placeholder author with real name/handle
-│   └── 2026-08-22-welcome-to-the-vidax-blog.md
-├── docs/                        # Structured API Documentation (Docusaurus doc sidebar)
+├── .github/workflows/deploy.yml # build + publish to GitHub Pages on push to main (actions/deploy-pages)
+├── blog/                        # Docusaurus blog — long-form engineering notes
+│   ├── authors.yml               # TODO: placeholder identity — replace before publishing
+│   ├── tags.yml                  # canonical tag taxonomy (two independent groups)
+│   ├── 2026-09-04-sharding-parallelism-and-jit-on-tpus.md
+│   ├── 2026-09-04-weight-offloading.md
+│   └── 2026-09-04-understanding-video-diffusion-architectures.md
+├── docs/
 │   ├── intro.md, quickstart.md, installation.md
-│   ├── models/                  # one page per model family (wan2_1, wan2_2, cosmos2_5, cosmos3)
-│   ├── sharding/                # hardware & sharding, weight offloading
-│   └── weight-bridge/           # PyTorch -> Flax weight translator overview
+│   ├── models/                  # one page per family: wan2_1, wan2_2, cosmos2_5, cosmos3,
+│   │                            #   ltx_video, ltx2_5, hunyuan_video_1_5, hunyuan_video, cogvideox
+│   ├── sharding/                # loading-pytorch-weights, hardware-and-sharding, weight-offloading
+│   └── api/                     # index + attention, rope, sharding, schedulers, translator
+│                                #   (ported from vidax/docs/api/*)
 ├── src/
 │   ├── components/
-│   │   ├── HeroBanner/          # tagline + Quickstart/GitHub/arXiv/Blog/pip buttons
-│   │   ├── VideoGallery/        # T2V/I2V tabs, per-clip model description/resolution/sampling-time
-│   │   ├── BenchmarkExplorer/   # filterable + sortable benchmark table
-│   │   ├── CitationFooter/      # BibTeX + GitHub issues/discussions + TRC acknowledgments
-│   │   └── icons/                # GitHubIcon, PaperIcon (also duplicated as raw SVG strings in
-│   │                              # docusaurus.config.ts for the navbar's non-React "html" items)
+│   │   ├── HeroBanner/          # tagline + Quickstart/GitHub/arXiv/Blog buttons (pip row commented out)
+│   │   ├── VideoGallery/        # T2V/I2V tabs; uniform per-task crop; ?tab= deep-link; preview mode for the homepage
+│   │   ├── BenchmarkExplorer/   # filterable + sortable table; sticky header; height="full|page|compact"
+│   │   ├── CitationFooter/      # Acknowledgments (BibTeX "Cite vidax" block commented out — no arXiv yet)
+│   │   └── icons/               # GitHubIcon, PaperIcon (also inlined as raw SVG in docusaurus.config.ts's navbar)
 │   ├── data/
-│   │   ├── benchmarks.json      # generated -- do not hand-edit, see scripts/gen_benchmarks_data.py
-│   │   └── videos.ts            # gallery clip metadata (model description, exact resolution, sampling time, poster/src paths)
-│   ├── pages/                   # index (home), gallery.tsx, benchmarks.tsx (standalone full-page views)
+│   │   ├── benchmarks.json      # GENERATED — do not hand-edit; see scripts/gen_benchmarks_data.py
+│   │   └── videos.ts            # gallery clip metadata + HOMEPAGE_{T2V,I2V}_IDS (the curated homepage subset)
+│   ├── pages/                   # index.tsx (home), gallery.tsx, benchmarks.tsx
+│   ├── theme/BlogListPage/      # swizzled: two-group tag filter + JSON-LD structured data
 │   └── css/custom.css
 └── static/
     ├── img/
-    │   ├── logo.svg, favicon.ico  # placeholders -- swap for real branding
-    │   └── posters/                # first-frame JPEGs per gallery clip (see "Video loading performance")
-    └── videos/                  # demo .mp4 clips copied from vidax/out/**/*.mp4 (run 1 of each combo)
+    │   ├── logo*.svg, favicon.ico  # placeholder branding — swap for real marks
+    │   └── posters/                # 32 first-frame JPEGs, one per gallery clip (~1.2 MB total)
+    └── videos/                     # 32 demo .mp4s (run 1 of each combo), re-encoded H.264 (~28 MB total)
 ```
 
 ## Data provenance
 
-Nothing on this site is fabricated data — everything traces back to a real
-file in `vidax/`, either linked to directly or copied/transformed in:
+Nothing on this site is fabricated — everything traces back to a real file
+in `vidax/`, either linked directly or copied/transformed in:
 
-- **Benchmark Explorer** (`src/data/benchmarks.json`) is generated from
-  [`vidax/benchmarks/results/*.json`](../vidax/benchmarks/results) by
-  `scripts/gen_benchmarks_data.py`. All current rows are **TPU v4,
-  bfloat16** — vidax hasn't benchmarked v5e/v6e or fp8 yet, and there's no
-  PyTorch/GPU baseline comparison collected yet either (the explorer shows
-  a visible notice about this rather than inventing numbers). The
-  `Cosmos-Predict2.5` 14B row reflects the last completed run at the time
-  this scaffold was built; a fresh benchmarking pass is in progress in
-  `vidax` — rerun the generator once it lands.
-  - `family` is version-qualified (`Wan2.1` vs. `Wan2.2`, `Cosmos-Predict2.5`
-    vs. `Cosmos3`) rather than a bare `Wan`/`Cosmos` — these are
-    architecturally distinct model generations within vidax, not size
-    variants of one model, and the family filter/table must not collapse
-    them.
+- **Benchmark Explorer** (`src/data/benchmarks.json`, 32 rows) is generated
+  from [`vidax/benchmarks/results/*.json`](../vidax/benchmarks/results) by
+  `scripts/gen_benchmarks_data.py`. All rows are **TPU v4, bfloat16 I/O**
+  (some DiTs keep fp32 weights) — vidax hasn't benchmarked v5e/v6e or fp8,
+  and there's no GPU/PyTorch baseline collected. The generator carries
+  per-slug override tables (family label, size label, I/O vs. weight dtype,
+  and measured I2V output resolution) — read its docstring before editing.
+  - `family` is version-qualified (`Wan2.1` vs. `Wan2.2`, `Cosmos3` vs.
+    `Cosmos-Predict2.5`, `HunyuanVideo` vs. `HunyuanVideo-1.5`,
+    `CogVideoX` vs. `CogVideoX1.5`) — these are architecturally distinct
+    generations, and the family filter must not collapse them.
   - I2V rows' `resolution` is **not** taken from vidax's benchmark JSON
-    (which records either the literal string `"NonexNone"` or, for one row,
-    a stale copy of the T2V config value — neither is the real output
-    size). It's measured directly from each row's own run-1 output video
-    in `vidax/out/` via ffmpeg — see `I2V_RESOLUTION_OVERRIDES` in
-    `scripts/gen_benchmarks_data.py`. Re-measure and update that dict if
-    vidax reruns an I2V benchmark with a different conditioning image.
+    (it records `"NonexNone"` or a stale T2V value). It's measured with
+    `ffprobe` from each row's own run-1 output video in `vidax/out/` — see
+    `I2V_RESOLUTION_OVERRIDES` in the generator. Re-measure if vidax reruns
+    an I2V benchmark with a different conditioning image.
 - **Video Gallery** (`static/videos/*.mp4`, `static/img/posters/*.jpg`,
-  `src/data/videos.ts`) — 14 representative clips (run 1 of each
-  model/task/resolution combo's 5-run benchmark set) copied from
-  `vidax/out/`. Each entry's `width`/`height`/`resolution` are measured
-  directly from the encoded `.mp4` (same ffmpeg measurements as the
-  benchmark table's I2V overrides above), not copied from config, and each
-  card is sized to that exact aspect ratio via inline `aspect-ratio` CSS —
-  no more assuming 16:9 or labeling I2V clips "image-derived". Each video's
-  `description` is a short blurb about *the model architecture* (shared
-  across all clips from that model family/size), not the input prompt —
-  every clip uses the same conditioning inputs (see `examples/assets/` in
-  `vidax`), so there was nothing prompt-specific worth surfacing per card.
-- **Docs** (`docs/models/*.md`, `docs/sharding/*.md`,
-  `docs/weight-bridge/overview.md`) — summarized from
-  [`vidax/docs/`](../vidax/docs) and `vidax/README.md`. Each page has a
-  `:::info Source` callout pointing at the source file(s) and a TODO for
-  porting the full guide (these are currently condensed, not verbatim
-  copies — the full docs run 300–580 lines each).
-- **Model support table**, **install instructions**, **quickstart command**
-  — copied verbatim from `vidax/README.md`.
+  `src/data/videos.ts`) — 32 clips (run 1 of each model/task/resolution
+  combo's 5-run benchmark set), re-encoded to web-sized H.264 from
+  `vidax/out/`. `width`/`height`/`resolution` are measured directly from
+  the encoded `.mp4`. Every card is **cropped to one aspect ratio per
+  task** (16:9 T2V, 3:4 I2V) via `object-fit: cover`, and the description
+  is clamped to three lines *and* reserves that height, so cards align in a
+  grid regardless of blurb length. Each `description` is a short note about
+  *the model architecture* (shared across a family), not the prompt — every
+  clip uses the same conditioning inputs (`vidax/examples/assets/`).
+  `HOMEPAGE_T2V_IDS` / `HOMEPAGE_I2V_IDS` pick the curated homepage subset
+  (largest/best config per family+version, one each).
+- **Docs** (`docs/**/*.md`) — adapted from
+  [`vidax/docs/`](../vidax/docs) and `vidax/README.md`. Model guides and
+  the API reference track the corresponding `vidax/docs/models/*.md` and
+  `vidax/docs/api/*.md`; the blog posts are refreshed from
+  `vidax/docs/lessons/` + the sharding/offloading docs. Source links point
+  into the `vidax` repo on GitHub.
 
 ### Video loading performance
 
-The gallery mounts a `<video>` per clip but never fetches video bytes until
-the viewer actually presses play: `preload="none"` plus a `poster` (a
-per-clip first-frame JPEG in `static/img/posters/`, ~15–45KB each vs.
-300KB–2.4MB for the full clip — about 472KB total vs. 16MB for all 14
-videos) means the initial page load only downloads the small poster images.
-Only the active tab's ~5–9 clips are mounted at all (switching T2V/I2V tabs
-unmounts the previous tab's `<video>` elements). Regenerate posters with:
+The gallery mounts a `<video>` per clip but fetches no video bytes until
+the viewer presses play: `preload="none"` + a `poster` (per-clip first-frame
+JPEG, ~1.2 MB for all 32 vs. ~28 MB for the clips) means the initial load
+only pulls the small posters. Only the active tab's clips are mounted.
+Regenerate a poster with (needs `ffmpeg` — e.g. from the
+`vidax-report-fig` conda env):
 
 ```bash
-ffmpeg -y -i static/videos/<id>.mp4 -ss 00:00:00.5 -vframes 1 -vf "scale='min(480,iw)':-2" -q:v 4 static/img/posters/<id>.jpg
+ffmpeg -y -i static/videos/<id>_1.mp4 -vf "select=eq(n\,0),scale=480:-2" -frames:v 1 -q:v 4 static/img/posters/<id>_1.jpg
 ```
 
-### Known placeholders (fill in before publishing)
+### Known placeholders (fill in before / after the arXiv report)
 
-- `docusaurus.config.ts`: arXiv URL (`arxiv.org/abs/TODO`), GitHub org/repo
-  assumed as `FlyingGiraffe/vidax` — confirm before deploy.
-- `src/components/HeroBanner`: pip install command assumes package name
-  `vidax` — there's no PyPI release yet, only editable installs from source.
-- `src/components/CitationFooter`: BibTeX entry has placeholder author
-  list/arXiv id.
-- `static/img/logo.svg`, `static/img/favicon.ico`: minimal placeholder
-  marks, not real vidax branding.
-- No social-card OG image yet (`docusaurus.config.ts` notes where to add
-  one).
-- `blog/authors.yml`: placeholder `vidax-team` author (name/handle/avatar)
-  — replace with a real identity before publishing.
-- `src/components/icons/PaperIcon.tsx` is a generic document glyph, not
-  arXiv's actual logo/wordmark (kept generic deliberately to avoid
-  misrepresenting a trademark) — swap it for something more specific if
-  desired.
-- Benchmark Explorer has no TPU v5e/v6e, fp8, or GPU-baseline columns
-  populated — the filters exist and will work as soon as
-  `vidax/benchmarks/results/*.json` grows those dimensions.
+- `docusaurus.config.ts`: arXiv URL is still `arxiv.org/abs/TODO` (hero
+  button, navbar, footer). Org/repo (`FlyingGiraffe/vidax-site`) and the
+  Pages `url`/`baseUrl` are correct and live.
+- `src/components/HeroBanner`: the `pip install` launch row is **commented
+  out** (no PyPI release yet) — restore with the real package/version when
+  it ships.
+- `src/components/CitationFooter`: the "Cite vidax" heading + BibTeX block
+  are **commented out** — restore with the real entry once the report is up.
+- `static/img/logo*.svg`, `favicon.ico`: placeholder marks. No OG social
+  card yet (`docusaurus.config.ts` marks where to add one).
+- `blog/authors.yml`: placeholder `vidax-team` identity.
+- `src/components/icons/PaperIcon.tsx`: generic document glyph, not arXiv's
+  mark (deliberately generic to avoid misusing a trademark).
+- Benchmark Explorer has no v5e/v6e, fp8, or GPU-baseline rows — the
+  filters already handle those dimensions once
+  `vidax/benchmarks/results/*.json` grows them.
 
 ## Development
 
-Requires Node.js ≥18 (the system Node may be too old — see below). Verified
-working: `npm install`, `npm run typecheck`, and `npm run build` all pass
-clean with no warnings.
+Requires Node.js ≥18. `npm run typecheck` and `npm run build` both pass
+clean (the CI workflow runs `npm ci && npm run build` on Node 20).
 
 ```bash
 npm install
-npm start        # local dev server with hot reload
+npm start         # dev server with hot reload
 npm run build     # static build to build/
 npm run serve     # preview the production build locally
 ```
 
 If your system Node is too old (Ubuntu's stock `apt` package is often
-Node 10, well below Docusaurus 3's Node ≥18 requirement), the simplest fix
-without touching system packages or `sudo` is a dedicated conda env:
+Node 10), the simplest fix without `sudo` is a dedicated conda env:
 
 ```bash
 conda create -n vidax-site-node -c conda-forge nodejs=20
@@ -173,22 +171,29 @@ conda activate vidax-site-node
 
 ## Keeping data in sync
 
-`vidax-site` is a separate repo/checkout from `vidax`, so nothing here
-updates automatically when `vidax` changes. Re-run when relevant:
+`vidax-site` is a separate checkout from `vidax`; nothing here updates
+automatically. Re-run when relevant:
 
 ```bash
-# after vidax/benchmarks/results/*.json changes (new runs, new TPU gens, fp8, GPU baselines)
+# after vidax/benchmarks/results/*.json changes (new runs, TPU gens, fp8, baselines)
 python3 scripts/gen_benchmarks_data.py --vidax-repo ../vidax
+# then update src/data/videos.ts sampling times / add rows to match
 
 # after new/updated demo clips land in vidax/out/
-cp ../vidax/out/<combo>/<combo>_1.mp4 static/videos/
-# ...and add a matching entry to src/data/videos.ts
+ffmpeg -y -i ../vidax/out/<combo>/<combo>_1.mp4 -an -c:v libx264 -crf 30 -preset slow \
+  -pix_fmt yuv420p -movflags +faststart static/videos/<combo>_1.mp4
+# ...regenerate its poster (above) and add/update the entry in src/data/videos.ts
 ```
+
+Model-doc, API-reference, and blog content is adapted by hand from
+`vidax/docs/` — re-read the corresponding source file when a model or
+subsystem changes.
 
 ## Deployment
 
-`.github/workflows/deploy.yml` builds and publishes to GitHub Pages on push
-to `main` via `actions/deploy-pages`. Requires GitHub Pages set to "GitHub
-Actions" as the source in repo settings, and `organizationName`/
-`projectName`/`url` in `docusaurus.config.ts` to match the real repo once
-this is pushed to GitHub.
+Live on GitHub Pages via `.github/workflows/deploy.yml` (build + publish on
+push to `main`, plus manual `workflow_dispatch`). Requires repo
+**Settings → Pages → Source: GitHub Actions**. The workflow uses
+`actions/deploy-pages` — no `gh-pages` branch, no deploy key. `url` /
+`baseUrl` / `organizationName` / `projectName` in `docusaurus.config.ts`
+already match `FlyingGiraffe/vidax-site`.

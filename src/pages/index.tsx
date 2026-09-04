@@ -22,7 +22,7 @@ export default function Home(): React.ReactElement {
 
         <section className={styles.section}>
           <Heading as="h2">Benchmark Explorer</Heading>
-          <BenchmarkExplorer compact />
+          <BenchmarkExplorer height="compact" />
         </section>
 
         <CitationFooter />

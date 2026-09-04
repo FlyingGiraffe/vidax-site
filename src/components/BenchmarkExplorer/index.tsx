@@ -140,13 +140,16 @@ const DEFAULT_SORT_KEY = 'perStepS';
 const DEFAULT_SORT_ASC = true;
 
 interface BenchmarkExplorerProps {
-  /** Homepage mode: cap the table body height and let it scroll, so the
-   * full 32-row table doesn't dominate the landing page. */
-  compact?: boolean;
+  /** Height of the scroll window around the table body (the sticky header
+   * stays pinned):
+   *  - `'full'`    — no cap (default)
+   *  - `'page'`    — tall cap, for the dedicated /benchmarks page
+   *  - `'compact'` — short cap, for the homepage embed */
+  height?: 'full' | 'page' | 'compact';
 }
 
 export default function BenchmarkExplorer({
-  compact = false,
+  height = 'full',
 }: BenchmarkExplorerProps): React.ReactElement {
   const families = useMemo(() => Array.from(new Set(ROWS.map((r) => r.family))).sort(), []);
   const devices = useMemo(
@@ -253,7 +256,15 @@ export default function BenchmarkExplorer({
         </button>
       </div>
 
-      <div className={compact ? `${styles.tableWrap} ${styles.tableWrapCompact}` : styles.tableWrap}>
+      <div
+        className={[
+          styles.tableWrap,
+          height === 'compact' && styles.tableWrapCompact,
+          height === 'page' && styles.tableWrapPage,
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
         <table className={styles.table}>
           <colgroup>
             {COLUMNS.map((col) => (

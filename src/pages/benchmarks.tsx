@@ -13,7 +13,7 @@ export default function BenchmarksPage(): React.ReactElement {
       <main>
         <section className={styles.section}>
           <Heading as="h1">Benchmark Explorer</Heading>
-          <BenchmarkExplorer />
+          <BenchmarkExplorer height="page" />
         </section>
       </main>
     </Layout>
