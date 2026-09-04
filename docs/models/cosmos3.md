@@ -5,15 +5,6 @@ title: Cosmos3
 
 # Cosmos3
 
-:::warning Architecturally unrelated to Cosmos-Predict2.5
-Despite the shared "Cosmos" name, Cosmos3 is **not** another DiT
-variant — it's an omnimodal Mixture-of-Transformers (MoT) combining a
-causal "understanding" (text) pathway with a full-attention "generation"
-(diffusion) pathway inside one shared transformer, no AdaLN modulation
-anywhere, and a genuinely different (interleaved) 3D rotary position
-scheme. Treat it as a separate model family entirely.
-:::
-
 One standalone TPU inference script, `generate_cosmos3.py`, covers both
 released checkpoint sizes' text-to-video and image-to-video generation via
 `--model_size {nano,edge}` — the only two of Cosmos3's several surfaces
@@ -28,12 +19,14 @@ conventions).
 | `generate_cosmos3.py --model_size nano` | Cosmos3-Nano | 16B | Text2Video, Image2Video | `Cosmos3-Nano/` |
 | `generate_cosmos3.py --model_size edge` | Cosmos3-Edge | 4B | Text2Video, Image2Video | `Cosmos3-Edge/` |
 
-The `torch` extra is **not** needed (checkpoints ship as `.safetensors`,
-loaded directly) — but `text` is (`transformers`, for the tokenizer + chat
-template), and `i2v` (`pillow`, for the conditioning frame):
+This model never touches `torch` at runtime (checkpoints ship as
+`.safetensors`, loaded directly), but `transformers` (the tokenizer + chat
+template) and `pillow` (the conditioning frame) are used — all core
+dependencies, installed by default. On a Cloud TPU VM also add the `tpu`
+extra:
 
 ```bash
-pip install -e ".[tpu,text,i2v]"
+pip install -e ".[tpu]"    # or just: pip install -e .
 ```
 
 Both sizes share the exact same weight layout and DiT code

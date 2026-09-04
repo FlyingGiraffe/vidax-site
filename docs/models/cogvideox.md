@@ -25,10 +25,11 @@ encoder (reused verbatim from the LTX-Video port), and the
 `CogVideoXDPMScheduler` — v-prediction + zero-terminal-SNR + SD3-style SNR
 shift + `trailing` spacing).
 
-Requires the `torch`, `text`, and `i2v` extras:
+Everything it needs (`torch`, `transformers`, `pillow`) is installed by
+default. On a Cloud TPU VM also add the `tpu` extra:
 
 ```bash
-pip install -e ".[tpu,torch,text,i2v]"
+pip install -e ".[tpu]"    # or just: pip install -e .
 ```
 
 ## Checkpoints

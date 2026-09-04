@@ -1,9 +1,9 @@
 ---
 sidebar_position: 3
-title: Rotary & timestep embeddings
+title: Rotary & Timestep Embeddings
 ---
 
-# `vidax.core` RoPE & embeddings
+# `vidax.core` RoPE & Embeddings
 
 Source: [`src/vidax/core/rope3d.py`](https://github.com/FlyingGiraffe/vidax/blob/main/src/vidax/core/rope3d.py).
 Import from `vidax.core` (or `vidax.core.rope3d`).

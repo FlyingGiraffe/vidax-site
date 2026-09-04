@@ -1,9 +1,9 @@
 ---
 sidebar_position: 2
-title: Attention & normalization
+title: Attention & Normalization
 ---
 
-# `vidax.core` attention & norms
+# `vidax.core` Attention & Norms
 
 Source: [`src/vidax/core/attention.py`](https://github.com/FlyingGiraffe/vidax/blob/main/src/vidax/core/attention.py).
 Import from `vidax.core` (or `vidax.core.attention`).

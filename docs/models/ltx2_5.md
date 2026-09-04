@@ -5,15 +5,6 @@ title: LTX-2.5
 
 # LTX-2.5
 
-:::info Architecturally unrelated to LTX-Video
-Despite the shared "LTX" name and causal-conv VAE family, LTX-2.5 is a
-much larger 22B DiT with cross-attention AdaLN and gated attention, an
-8-layer "embeddings connector" bridging a Gemma-4 12B text encoder (not
-T5) into the DiT, and an ancestral (SDE) Euler sampler instead of a plain
-deterministic step. See [Understanding video diffusion architectures](/blog/video-diffusion-architectures)
-for the comparison.
-:::
-
 One standalone TPU inference script, `generate_ltx2_5.py`, covers both T2V
 and I2V for the two released 22B checkpoints (dev, distilled). Scope is
 deliberately narrower than LTX-2.5's full reference: video-only (no audio
@@ -24,10 +15,11 @@ generation), single-stage (no `LatentUpsampler` two-pass refinement).
 | `generate_ltx2_5.py` | LTX-2.5 | 22B (dev) | T2V, I2V | `ltx-2.5-22b-dev-transformer-bf16.safetensors` |
 | `generate_ltx2_5.py` | LTX-2.5 | 22B (distilled) | T2V, I2V | `ltx-2.5-22b-distilled-transformer-bf16.safetensors` |
 
-Requires the `torch`, `text`, and `i2v` extras:
+Everything it needs (`torch`, `transformers`, `pillow`) is installed by
+default. On a Cloud TPU VM also add the `tpu` extra:
 
 ```bash
-pip install -e ".[tpu,torch,text,i2v]"
+pip install -e ".[tpu]"    # or just: pip install -e .
 ```
 
 ## Checkpoints

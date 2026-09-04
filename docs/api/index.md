@@ -23,11 +23,11 @@ Not covered here: the per-model DiT / VAE / text-encoder modules under
 
 | Page | Module | Contents |
 | --- | --- | --- |
-| [Attention & normalization](./attention.md) | `vidax.core` | `dot_product_attention` (Pallas TPU flash attention), the sequence-parallel attention variants, `local_attention`, `RMSNorm` / `TPShardedRMSNorm`, `chunk_by_rank` |
-| [Rotary & timestep embeddings](./rope.md) | `vidax.core` | `create_rope3d_freqs`, `apply_rope3d`, `sinusoidal_embedding_1d` |
-| [Device mesh & sharding](./sharding.md) | `vidax.core` | `build_tpu_mesh`, `get_replicated_sharding`, `get_batch_sharding`, `shard_wan_params`, `to_partition_specs`, `configure_jax_cache` |
+| [Attention & Normalization](./attention.md) | `vidax.core` | `dot_product_attention` (Pallas TPU flash attention), the sequence-parallel attention variants, `local_attention`, `RMSNorm` / `TPShardedRMSNorm`, `chunk_by_rank` |
+| [Rotary & Timestep Embeddings](./rope.md) | `vidax.core` | `create_rope3d_freqs`, `apply_rope3d`, `sinusoidal_embedding_1d` |
+| [Device Mesh & Sharding](./sharding.md) | `vidax.core` | `build_tpu_mesh`, `get_replicated_sharding`, `get_batch_sharding`, `shard_wan_params`, `to_partition_specs`, `configure_jax_cache` |
 | [Schedulers](./schedulers.md) | `vidax.schedulers` | `RectifiedFlowScheduler`, `FlowUniPCMultistepScheduler` + `UniPCState`, and the family-specific samplers (CogVideoX, LTX-Video, LTX-2.5) |
-| [Checkpoint translator](./translator.md) | `vidax.translator` | `load_torch_checkpoint_to_jax` (+ the full `model_type` table), `convert_pt_tensor_to_jax`, `pt_tensor_to_numpy`, and the per-model `map_*_keys` functions |
+| [Checkpoint Translator](./translator.md) | `vidax.translator` | `load_torch_checkpoint_to_jax` (+ the full `model_type` table), `convert_pt_tensor_to_jax`, `pt_tensor_to_numpy`, and the per-model `map_*_keys` functions |
 
 ## Import conventions
 

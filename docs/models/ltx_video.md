@@ -18,10 +18,11 @@ for how it compares to the rest of vidax's model families.
 | `generate_ltx_video.py` | LTX-Video 0.9.8 | 13B (dev) | T2V, I2V | `ltxv-13b-0.9.8-dev.safetensors` |
 | `generate_ltx_video.py` | LTX-Video 0.9.8 | 13B (distilled) | T2V, I2V | `ltxv-13b-0.9.8-distilled.safetensors` |
 
-Requires the `torch`, `text`, and `i2v` extras:
+Everything it needs (`torch`, `transformers`, `pillow`) is installed by
+default. On a Cloud TPU VM also add the `tpu` extra:
 
 ```bash
-pip install -e ".[tpu,torch,text,i2v]"
+pip install -e ".[tpu]"    # or just: pip install -e .
 ```
 
 ## Checkpoints

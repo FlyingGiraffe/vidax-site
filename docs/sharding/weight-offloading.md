@@ -9,14 +9,6 @@ Practical reference for `--offload_dit_weights`/`--offload_chunk_size` —
 per-layer weight offloading, for configs that don't fit fully
 device-resident even with tensor/sequence parallelism.
 
-:::info Looking for the background?
-This page is deliberately just the actionable rules. For the "why" — what
-weight offloading is, the ZeRO-Offload idea behind it, and what it actually
-costs across five model families — see
-[Weight offloading: trading bandwidth for memory](/blog/weight-offloading)
-on the blog.
-:::
-
 ## What it does
 
 Keeps a DiT's weight tree in **host RAM** instead of HBM, streaming
@@ -29,7 +21,7 @@ HunyuanVideo 1.0's dual-stream / single-stream DiT (two independent chunk
 pools, `--offload_chunk_size_double` / `--offload_chunk_size_single`, since
 the two block types have different parameter shapes).
 
-:::danger Not a free option — real throughput cost
+:::warning Not a free option — real throughput cost
 Measured on Wan2.1 14B T2V at native 720P: **130.0s/step offloaded vs.
 26.1s/step non-offloaded at 480P.** Treat this as a correctness/memory-fit
 tool for configs that don't fit any other way, not something to enable by

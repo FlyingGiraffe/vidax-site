@@ -16,13 +16,6 @@ Mixture-of-Transformers (**Cosmos 3**), dual-stream/single-stream MMDiTs
 (**HunyuanVideo 1.0** and **HunyuanVideo-1.5**), and a single
 joint-attention DiT (**CogVideoX / CogVideoX1.5**).
 
-:::info Source of truth
-This site's docs are adapted from [`vidax/README.md`](https://github.com/FlyingGiraffe/vidax/blob/main/README.md)
-and every file under [`vidax/docs/`](https://github.com/FlyingGiraffe/vidax/tree/main/docs).
-The `vidax` engine repo is the canonical source for all model/feature
-claims; this site never edits that repo, only reads from it.
-:::
-
 ## Key features
 
 - **Native TPU performance** — `jax.sharding` device meshes and a real

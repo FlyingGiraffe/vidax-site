@@ -5,14 +5,6 @@ title: Wan2.2
 
 # Wan2.2
 
-:::warning Wan2.1 and Wan2.2 are different models
-Despite the shared "Wan" name and DiT lineage, Wan2.2 is a genuinely
-different architecture from Wan2.1 — per-*token* (not per-sample) AdaLN
-modulation, a different VAE for TI2V-5B, and (for A14B) a two-expert
-Mixture-of-Experts design. They are not interchangeable, and their
-benchmark/support entries are tracked separately throughout this site.
-:::
-
 Three standalone TPU inference scripts live in `examples/`. They share the
 same building blocks (`vidax.core`, `vidax.schedulers`, `vidax.translator`)
 but differ in checkpoint format, resolution defaults, and parallelism
@@ -30,11 +22,12 @@ Wan2.2 working).
 All three build `vidax.models.wan.wan2_2.dit.WanDiT` (fully config-driven,
 per-token AdaLN modulation) from a named preset
 (`TI2V_5B_CONFIG`/`T2V_A14B_CONFIG`/`I2V_A14B_CONFIG`) — the architecture is
-identical across all three; only size and (for I2V) `in_dim` differ. All
-three require the `torch` and `text` extras:
+identical across all three; only size and (for I2V) `in_dim` differ.
+Everything they need (`torch`, `transformers`) is installed by default; on a
+Cloud TPU VM also add the `tpu` extra:
 
 ```bash
-pip install -e ".[tpu,torch,text]"
+pip install -e ".[tpu]"    # or just: pip install -e .
 ```
 
 ## TI2V (5B) — `generate_wan2_2_ti2v.py`

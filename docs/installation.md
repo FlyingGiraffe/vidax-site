@@ -5,37 +5,42 @@ title: Installation
 
 # Installation
 
-vidax targets Python ≥3.10 and follows the standard `src`-layout, installed
-editable straight from a clone (no PyPI package yet — `pip install vidax`
-will be added here once `v0.1.0-alpha` ships).
+vidax targets **Python 3.10–3.12** and follows the standard `src`-layout. It's
+installed editable straight from a clone — there's no PyPI release yet
+(`pip install vidax` will be added here once one ships).
 
 ```bash
 git clone https://github.com/FlyingGiraffe/vidax.git
 cd vidax
-pip install -e ".[tpu,torch,text]"
+pip install -e .                # everything needed to run a model
+pip install -e ".[tpu]"         # on a Cloud TPU VM — pulls the right jax[tpu] wheel
 ```
+
+That's the whole story for running models — there are **no per-model-family
+extras to juggle**. `torch`, `transformers`, `sentencepiece`, and `pillow`
+are ordinary (non-optional) dependencies: every model uses them to
+*deserialize* the released `.pth`/`.safetensors` checkpoints and to tokenize
+text / load the I2V conditioning image. vidax's own model code (everything
+under `vidax.models`) never imports them — Cosmos3, for instance, doesn't
+touch `torch` at runtime (its checkpoint is `.safetensors`), but `torch` is
+still installed as a base dependency.
 
 ## Extras
 
-vidax's own model implementations never depend on `torch`/`transformers` —
-those libraries are used solely to deserialize checkpoints and tokenize
-text, so which extras you need depends on which model family you're
-running:
+Only two optional groups remain:
 
-| Extra | Purpose | Needed by |
+| Extra | Contents | When you need it |
 | --- | --- | --- |
-| `tpu` | Correct TPU `jaxlib` wheel | Every model, on a TPU VM |
-| `torch` | Deserialize `.pth`/`.safetensors` checkpoints | Every family **except** Cosmos3, which ships `.safetensors` loaded directly without `torch` |
-| `text` | Tokenizers (UMT5-XXL for Wan, Qwen2.5-VL/Qwen2Tokenizer for Cosmos, T5-XXL for LTX-Video and CogVideoX, Gemma-4 for LTX-2.5, Qwen2.5-VL+byT5 for HunyuanVideo-1.5, Llama-3/CLIP/LLaVA for HunyuanVideo 1.0) | Every model |
-| `i2v` | `pillow`, for image/video conditioning frames | Every model's I2V/image2world path |
-| `dev` | `pytest` + `pytest-xdist` | Running the test suite |
+| `tpu` | `jax[tpu]` | On a Cloud TPU VM, to get the correct `jaxlib` wheel. Off-TPU (CPU/GPU, for translation or CPU smoke tests) you don't need it. |
+| `dev` | `pytest`, `pytest-xdist`, `ruff`, `build`, `twine` | Running the test suite, linting, or building the package. See [Contributing](https://github.com/FlyingGiraffe/vidax/blob/main/CONTRIBUTING.md). |
 
-So a Wan-only install is `pip install -e ".[tpu,torch,text]"`; a
-Cosmos-Predict2.5 install additionally needs `i2v`
-(`".[tpu,torch,text,i2v]"`); a Cosmos3-only install can skip `torch`
-entirely (`".[tpu,text,i2v]"`). Core dependencies (`jax`, `flax`, `numpy`,
-`safetensors`, `imageio`, `imageio-ffmpeg`) install automatically with the
-base package regardless.
+```bash
+pip install -e ".[dev]"         # contributors — add ".[tpu]" too on a TPU VM
+```
+
+The base dependency set (`jax`, `flax`, `numpy`, `safetensors`, `imageio`,
+`imageio-ffmpeg`, `torch`, `transformers`, `sentencepiece`, `pillow`)
+installs automatically with `pip install -e .`.
 
 ## Checkpoints
 
@@ -45,5 +50,6 @@ and translates them into Flax pytrees at load time — there are no separate
 vidax-hosted weights. See each
 [model guide](./models/wan2_1.md) for the exact HuggingFace repo to
 download from, the expected checkpoint file layout, and which files come
-from which repo (some models, like Cosmos-Predict2.5, assemble their DiT,
-VAE, and text encoder from three separate HuggingFace repos).
+from which repo (some models, like Cosmos-Predict2.5 and HunyuanVideo,
+assemble their DiT, VAE, and text encoder from several separate HuggingFace
+repos).

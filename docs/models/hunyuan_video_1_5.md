@@ -30,10 +30,11 @@ downloaded root (`transformer/`, `vae/`, `text_encoder/{llm,byt5-small,Glyph-SDX
 [`black-forest-labs/FLUX.1-Redux-dev`](https://huggingface.co/black-forest-labs/FLUX.1-Redux-dev)'s
 downloaded root — a **gated** repo, request access first.
 
-Requires the `torch`, `text`, and `i2v` extras:
+Everything it needs (`torch`, `transformers`, `pillow`) is installed by
+default. On a Cloud TPU VM also add the `tpu` extra:
 
 ```bash
-pip install -e ".[tpu,torch,text,i2v]"
+pip install -e ".[tpu]"    # or just: pip install -e .
 ```
 
 ### Text-to-video

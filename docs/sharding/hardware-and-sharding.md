@@ -9,14 +9,6 @@ Practical reference for configuring vidax's parallelism flags
 (`--tensor_parallel_size`, `--sequence_parallel_size`) and understanding
 TPU topology conventions.
 
-:::info Looking for the background?
-This page is deliberately just the actionable rules. For the "why" —
-what tensor and sequence parallelism actually do, and how `jax.jit`
-compiles a loop (including the VAE-decode incident this taught us) — see
-[Sharding, parallelism, and JIT compilation on TPUs, with JAX](/blog/hardware-and-sharding)
-on the blog.
-:::
-
 ## TPU topology
 
 :::warning `vN-M` names TensorCores, not chips

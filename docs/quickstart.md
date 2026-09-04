@@ -8,10 +8,12 @@ title: Quickstart
 Generate your first video with Wan2.1 T2V (1.3B) on a TPU VM.
 
 ```bash
-# Clone and install (editable, with TPU / torch-checkpoint-loading / tokenizer extras)
+# Clone and install (editable). On a Cloud TPU VM add the "tpu" extra for
+# the right jax[tpu] wheel; torch / transformers / tokenizers are already
+# core dependencies.
 git clone https://github.com/FlyingGiraffe/vidax.git
 cd vidax
-pip install -e ".[tpu,torch,text]"
+pip install -e ".[tpu]"
 
 # Generate a video (Wan2.1 T2V, 1.3B)
 python examples/generate_wan2_1_t2v.py \

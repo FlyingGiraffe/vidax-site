@@ -26,10 +26,11 @@ pooled-CLIP-L text stack (no byT5 / SigLIP token-concatenation), a
 GroupNorm causal-conv VAE, and fused-QKV checkpoint Linears that the
 translator splits on load.
 
-Requires the `torch`, `text`, and `i2v` extras:
+Everything it needs (`torch`, `transformers`, `pillow`) is installed by
+default. On a Cloud TPU VM also add the `tpu` extra:
 
 ```bash
-pip install -e ".[tpu,torch,text,i2v]"
+pip install -e ".[tpu]"    # or just: pip install -e .
 ```
 
 ## Text-to-video — `generate_hunyuan_video.py`

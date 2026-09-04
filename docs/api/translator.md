@@ -1,9 +1,9 @@
 ---
 sidebar_position: 6
-title: Checkpoint translator
+title: Checkpoint Translator
 ---
 
-# `vidax.translator` checkpoint loading
+# `vidax.translator` Checkpoint Loading
 
 Loads released PyTorch `.safetensors` / `.pth` checkpoints straight into a
 Flax parameter pytree — key names remapped and tensor layouts transposed to

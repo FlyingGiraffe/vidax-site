@@ -47,19 +47,24 @@ from silently OOM-ing onto a single device before sharding ever runs.
 ## Verification: exact 1:1 parameter-tree matches
 
 Every translated checkpoint is checked against the model's own initialized
-Flax parameter tree — every key present, every shape matching, before any
+Flax parameter tree — every key present, every shape matching — before any
 forward pass is trusted. This has caught real bugs on its own (a swapped
 mask-channel concatenation order, a missing DiT-internal timestep rescale)
-and is the first verification step for every model in vidax:
+and is the first verification step for every model in vidax. Several ports
+go further and verify the *output* numerically against the reference
+PyTorch implementation (noted in the Match column).
 
-| Model | Component | Match |
+| Family | Component(s) | Match |
 | --- | --- | --- |
-| Cosmos-Predict2.5 | DiT | 569/569 keys |
-| Cosmos-Predict2.5 | Reason1 text encoder | 338/338 keys |
-| Cosmos3 (Nano/Edge) | DiT | 542/542 tensors, byte-exact against raw `.safetensors` |
+| Wan2.1 / Wan2.2 | DiT, VAE, UMT5 text encoder (each its own checkpoint file) | exact key/shape match; Wan's end-to-end output is **bit-exact** against the reference |
+| Cosmos-Predict2.5 | DiT / Reason1 (Qwen2.5-VL-7B) text encoder | 569/569 DiT keys · 338/338 Reason1 keys |
+| Cosmos3 (Nano / Edge) | DiT | 542/542 tensors, byte-exact against the raw `.safetensors` |
+| LTX-Video 0.9.8 | DiT / VAE / T5-XXL (DiT + VAE share one file) | exact key/shape match; output verified bit-exact vs. the reference at `jax_default_matmul_precision="highest"` (max diff ~3e-5, corr 0.99999999998) |
+| LTX-2.5 | DiT + embedded connector / VAE / Gemma-4 12B | exact shape match, with every hyperparameter *and* every tensor's stored dtype read from the checkpoint's own embedded metadata rather than hardcoded |
 | HunyuanVideo-1.5 | DiT / VAE / byT5 / SigLIP | 8.33B / 1.26B / 219M / 413M params, exact shape match |
-| HunyuanVideo-1.5 | Qwen2.5-VL MLLM | translated by Cosmos's `map_reason1_text_encoder_keys` unchanged (7.07B params) |
-| LTX-2.5 | DiT + connector / VAE / Gemma-4 | every hyperparameter read from the checkpoint's own embedded metadata |
+| HunyuanVideo-1.5 | Qwen2.5-VL MLLM | 7.07B params — translated by Cosmos's `map_reason1_text_encoder_keys` unchanged |
+| HunyuanVideo (1.0) | DiT | 856 leaves, exact 1:1 param-tree match (the checkpoint's fused QKV Linears split into per-projection chunks on load) |
+| CogVideoX / CogVideoX1.5 | DiT / VAE | near-mechanical prefix-strip from the diffusers module names; the T5-v1.1-XXL encoder reuses LTX-Video's mapper unchanged |
 
 An exact key/shape match is necessary but not sufficient — it confirms the
 translator found a home for every weight, not that the *semantics* of the
@@ -67,13 +72,6 @@ mapping are right (see the blog's
 [Engineering Notes](/blog/tags/engineering-notes) for real bugs that passed
 this check and were only caught by comparing generated output against the
 reference).
-
-:::info Source
-This page is adapted from `vidax/README.md`, the `vidax.translator` module,
-and the verification numbers reported in each model's own guide. `vidax`
-doesn't yet have a dedicated `docs/weight_bridge.md` with a worked
-key-mapping example — this page will be expanded if/when one lands.
-:::
 
 ---
 

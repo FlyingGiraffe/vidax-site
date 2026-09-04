@@ -20,12 +20,13 @@ T5) — see [Architecture, in brief](#architecture-in-brief) below.
 | `generate_cosmos2_5.py` | Cosmos-Predict2.5 | 2B | Text2World, Image2World, Video2World | `Cosmos-Predict2.5-2B/base/pre-trained` |
 | `generate_cosmos2_5.py` | Cosmos-Predict2.5 | 14B | Text2World, Image2World, Video2World | `Cosmos-Predict2.5-14B/base/pre-trained` |
 
-Requires the `torch` extra (to deserialize the `.pt` DiT/VAE checkpoints),
-`text` (`transformers`, for the Reason1/Qwen2.5-VL-7B tokenizer), and `i2v`
-(`pillow`, for image2world/video2world's conditioning frames):
+`torch` (to deserialize the `.pt` DiT/VAE checkpoints), `transformers` (the
+Reason1/Qwen2.5-VL-7B tokenizer), and `pillow` (image2world/video2world's
+conditioning frames) are all core dependencies, installed by default. On a
+Cloud TPU VM also add the `tpu` extra:
 
 ```bash
-pip install -e ".[tpu,torch,text,i2v]"
+pip install -e ".[tpu]"    # or just: pip install -e .
 ```
 
 ## Checkpoints

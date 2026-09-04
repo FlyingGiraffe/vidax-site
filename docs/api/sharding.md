@@ -1,9 +1,9 @@
 ---
 sidebar_position: 4
-title: Device mesh & sharding
+title: Device Mesh & Sharding
 ---
 
-# `vidax.core` device mesh & sharding
+# `vidax.core` Device Mesh & Sharding
 
 Source: [`src/vidax/core/sharding.py`](https://github.com/FlyingGiraffe/vidax/blob/main/src/vidax/core/sharding.py).
 Import from `vidax.core` (or `vidax.core.sharding`).

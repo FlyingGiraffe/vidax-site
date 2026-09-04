@@ -24,11 +24,12 @@ just selects which hyperparameter preset
 14B (no 1.3B I2V checkpoint exists), so its script has no `--model_size`
 flag — it always builds `I2V_14B_CONFIG`.
 
-Both scripts require the `torch` extra (to deserialize `.pth`/`.safetensors`
-checkpoints) and the `text` extra (tokenization):
+Both scripts use `torch` (to deserialize `.pth`/`.safetensors` checkpoints)
+and `transformers`/`sentencepiece` (tokenization) — all core dependencies,
+installed by default. On a Cloud TPU VM also add the `tpu` extra:
 
 ```bash
-pip install -e ".[tpu,torch,text]"
+pip install -e ".[tpu]"    # or just: pip install -e .
 ```
 
 `--tokenizer_path` defaults to `<t5_checkpoint_dir>/google/umt5-xxl` for

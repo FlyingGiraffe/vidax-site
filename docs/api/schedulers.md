@@ -3,7 +3,7 @@ sidebar_position: 5
 title: Schedulers
 ---
 
-# `vidax.schedulers` samplers
+# `vidax.schedulers` Samplers
 
 One sampler per model's native schedule, all pure-JAX (no PyTorch), all
 `jax.jit`-friendly. The two general-purpose ones are re-exported from the
