@@ -12,7 +12,7 @@ device-resident even with tensor/sequence parallelism.
 :::info Looking for the background?
 This page is deliberately just the actionable rules. For the "why" — what
 weight offloading is, the ZeRO-Offload idea behind it, and what it actually
-costs across three model families — see
+costs across five model families — see
 [Weight offloading: trading bandwidth for memory](/blog/weight-offloading)
 on the blog.
 :::
@@ -24,7 +24,10 @@ Keeps a DiT's weight tree in **host RAM** instead of HBM, streaming
 HBM buffer at a time during the sampling loop — the same idea as
 DeepSpeed's ZeRO-Offload or `diffusers`' `enable_sequential_cpu_offload()`,
 applied per-layer. Implemented for Wan2.1's `WanDiT`, Wan2.2 A14B's
-`WanDiT`, and Cosmos-Predict2.5's `CosmosDiT`.
+`WanDiT`, Cosmos-Predict2.5's `CosmosDiT`, LTX-2.5's 22B DiT, and
+HunyuanVideo 1.0's dual-stream / single-stream DiT (two independent chunk
+pools, `--offload_chunk_size_double` / `--offload_chunk_size_single`, since
+the two block types have different parameter shapes).
 
 :::danger Not a free option — real throughput cost
 Measured on Wan2.1 14B T2V at native 720P: **130.0s/step offloaded vs.
@@ -60,11 +63,16 @@ committing to a full run.
 | Wan2.1 (T2V/I2V) | Native 720P only — not needed at 480P | No |
 | Wan2.2 A14B | All native-720P and most 480P configs | Yes — required at native 720P |
 | Cosmos-Predict2.5 14B | To reach the full 93-frame reference default | Yes |
+| LTX-2.5 22B | Always, at the reference resolution — but to bound *activation* memory (per-block temporaries weren't freed across the fused 48-block trace), not weight residency | No (composes with TP) |
+| HunyuanVideo 1.0 13B | Always, to fit the reference's 129-frame / 720p default in HBM at all | No (composes with TP) |
 
 A14B specifically needs offloading composed with
 `--sequence_parallel_size` because its AdaLN modulation is per-*token*, not
 per-sample — offloading alone reduces weight residency but can't shrink
-that per-token activation memory. See each
+that per-token activation memory. LTX-2.5 is the odd case: its weights fit
+comfortably (~6.6 GB/chip at `tp=4`), and offloading is used only for its
+side effect of splitting the block loop into separately-compiled chunks
+that bound peak activation memory. See each
 [model guide](../models/wan2_1.md) for verified working flag combinations
 and measured numbers, and the [Benchmark Explorer](/benchmarks) for every
 row.

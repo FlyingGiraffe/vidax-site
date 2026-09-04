@@ -138,6 +138,7 @@ const config: Config = {
             { label: 'Getting Started', to: '/docs/intro' },
             { label: 'Model Family Guides', to: '/docs/models/wan2_1' },
             { label: 'Sharding & Topology', to: '/docs/sharding/loading-pytorch-weights' },
+            { label: 'API Reference', to: '/docs/api/' },
           ],
         },
         {

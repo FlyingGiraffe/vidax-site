@@ -19,8 +19,12 @@ load time, via two pieces:
   `wan2_1.py`, `wan2_2.py`, `wan2_2_diffusers.py` (Cosmos3's VAE, shipped in
   `diffusers`' `AutoencoderKLWan` layout — a different key naming than
   Wan2.2's own release, same underlying architecture), `cosmos2_5.py`,
-  `cosmos3.py`, `reason1.py` (Qwen2.5-VL-7B text encoder), plus a shared
-  `common.py` for mappers reused across every Wan version.
+  `cosmos3.py`, `reason1.py` (Qwen2.5-VL-7B text encoder — reused unmodified
+  by HunyuanVideo-1.5's MLLM tower), `ltx_video.py`, `ltx2_5.py`,
+  `hunyuan_video.py` (1.0) / `hunyuan_video1_5.py`, `cogvideox.py`, plus a
+  shared `common.py` for mappers reused across every Wan version. The
+  [API reference for `vidax.translator`](../api/translator.md) has the full
+  `model_type` → mapper table and the per-leaf layout rules.
 
 ## Layout conversion
 
@@ -53,6 +57,9 @@ and is the first verification step for every model in vidax:
 | Cosmos-Predict2.5 | DiT | 569/569 keys |
 | Cosmos-Predict2.5 | Reason1 text encoder | 338/338 keys |
 | Cosmos3 (Nano/Edge) | DiT | 542/542 tensors, byte-exact against raw `.safetensors` |
+| HunyuanVideo-1.5 | DiT / VAE / byT5 / SigLIP | 8.33B / 1.26B / 219M / 413M params, exact shape match |
+| HunyuanVideo-1.5 | Qwen2.5-VL MLLM | translated by Cosmos's `map_reason1_text_encoder_keys` unchanged (7.07B params) |
+| LTX-2.5 | DiT + connector / VAE / Gemma-4 | every hyperparameter read from the checkpoint's own embedded metadata |
 
 An exact key/shape match is necessary but not sufficient — it confirms the
 translator found a home for every weight, not that the *semantics* of the

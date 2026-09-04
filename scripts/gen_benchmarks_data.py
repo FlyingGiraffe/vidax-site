@@ -41,16 +41,32 @@ I2V_RESOLUTION_OVERRIDES = {
     "wan2_2_5b-ti2v_i2v": "800x1088",
     "wan2_2_a14b_i2v": "544x720",
     "wan2_2_a14b_720p_i2v": "832x1104",
+    # CogVideoX I2V derives its output size from the conditioning image, so
+    # the recorded `resolution` (the T2V config value) is not what was
+    # rendered -- these are measured from vidax/out/<slug>/<slug>_1.mp4.
+    "cogvideox_5b_i2v": "512x672",
+    "cogvideox_1_5_5b_i2v": "896x1184",
+    # HunyuanVideo (1.0 & 1.5) I2V records "NonexNone"; measured from the
+    # run-1 output video.
+    "hunyuan_video1_5_480p_i2v": "544x720",
+    "hunyuan_video1_5_720p_i2v": "832x1104",
+    "hunyuan_video_720p_i2v": "832x1088",
 }
 
 # Wan2.1 and Wan2.2 are architecturally distinct model generations (not
 # variants of one "Wan" family) -- fold the version into the family label
-# so the table/filters never collapse them together.
+# so the table/filters never collapse them together. Same for HunyuanVideo
+# 1.0 vs 1.5 and the two LTX generations. CogVideoX vs CogVideoX1.5 share a
+# `model`/`version` and are split by `size` in code below instead.
 FAMILY_LABELS = {
     ("wan", "2.1"): "Wan2.1",
     ("wan", "2.2"): "Wan2.2",
     ("cosmos", "2.5"): "Cosmos-Predict2.5",
     ("cosmos", "3"): "Cosmos3",
+    ("hunyuan_video", "1.5"): "HunyuanVideo-1.5",
+    ("hunyuan_video", ""): "HunyuanVideo",
+    ("ltx2_5", ""): "LTX-2.5",
+    ("ltx_video", "0.9.8"): "LTX-Video",
 }
 
 # (ioDtype, weightDtype) per raw result slug, sourced directly from vidax's
@@ -81,6 +97,32 @@ DTYPE_OVERRIDES = {
     "wan2_2_a14b_720p_i2v": ("bf16", "fp32"),
     "wan2_2_a14b_i2v": ("bf16", "fp32"),
     "wan2_2_a14b_t2v": ("bf16", "fp32"),
+    # CogVideoX: all bf16. CogVideoX-2b's checkpoint actually ships float16
+    # and is cast to bf16 here -- the doc's Weight-dtype column still reads
+    # bf16 (with a footnote), so match that.
+    "cogvideox_2b_t2v": ("bf16", "bf16"),
+    "cogvideox_5b_t2v": ("bf16", "bf16"),
+    "cogvideox_5b_i2v": ("bf16", "bf16"),
+    "cogvideox_1_5_5b_t2v": ("bf16", "bf16"),
+    "cogvideox_1_5_5b_i2v": ("bf16", "bf16"),
+    # HunyuanVideo 1.0 & 1.5: DiT weights cast to bf16 (checkpoints ship
+    # fp32); activations bf16.
+    "hunyuan_video_720p_t2v": ("bf16", "bf16"),
+    "hunyuan_video_720p_i2v": ("bf16", "bf16"),
+    "hunyuan_video1_5_480p_t2v": ("bf16", "bf16"),
+    "hunyuan_video1_5_480p_i2v": ("bf16", "bf16"),
+    "hunyuan_video1_5_720p_t2v": ("bf16", "bf16"),
+    "hunyuan_video1_5_720p_i2v": ("bf16", "bf16"),
+    # LTX-Video 0.9.8: fully bf16. LTX-2.5: bf16 bulk, except the fp32
+    # AdaLN scale/shift tables the checkpoint itself ships -- the doc's
+    # Weight-dtype column reports the dominant dtype (bf16) with a footnote.
+    "ltx_video0_9_8_2b_distilled_t2v": ("bf16", "bf16"),
+    "ltx_video0_9_8_13b_dev_t2v": ("bf16", "bf16"),
+    "ltx_video0_9_8_13b_distilled_t2v": ("bf16", "bf16"),
+    "ltx2_5_22b_dev_t2v": ("bf16", "bf16"),
+    "ltx2_5_22b_distilled_t2v": ("bf16", "bf16"),
+    "ltx2_5_22b_dev_diffvae_t2v": ("bf16", "bf16"),
+    "ltx2_5_22b_distilled_diffvae_t2v": ("bf16", "bf16"),
 }
 
 # Human-readable size/variant label per raw result slug. Resolution is
@@ -102,6 +144,27 @@ SIZE_LABELS = {
     "wan2_2_a14b_720p_i2v": "A14B",
     "wan2_2_a14b_i2v": "A14B",
     "wan2_2_a14b_t2v": "A14B",
+    "cogvideox_2b_t2v": "2B",
+    "cogvideox_5b_t2v": "5B",
+    "cogvideox_5b_i2v": "5B",
+    "cogvideox_1_5_5b_t2v": "5B",
+    "cogvideox_1_5_5b_i2v": "5B",
+    # The 480p/720p suffix here is the checkpoint variant (each is trained
+    # for its own resolution band + default --shift), not just the output
+    # size -- keep it, matching vidax/docs/benchmarking.md.
+    "hunyuan_video1_5_480p_t2v": "8.3B (480p)",
+    "hunyuan_video1_5_480p_i2v": "8.3B (480p)",
+    "hunyuan_video1_5_720p_t2v": "8.3B (720p)",
+    "hunyuan_video1_5_720p_i2v": "8.3B (720p)",
+    "hunyuan_video_720p_t2v": "13B",
+    "hunyuan_video_720p_i2v": "13B",
+    "ltx_video0_9_8_2b_distilled_t2v": "2B distilled",
+    "ltx_video0_9_8_13b_dev_t2v": "13B dev",
+    "ltx_video0_9_8_13b_distilled_t2v": "13B distilled",
+    "ltx2_5_22b_dev_t2v": "22B dev",
+    "ltx2_5_22b_distilled_t2v": "22B distilled",
+    "ltx2_5_22b_dev_diffvae_t2v": "22B dev, diffusion VAE",
+    "ltx2_5_22b_distilled_diffvae_t2v": "22B distilled, diffusion VAE",
 }
 
 
@@ -148,7 +211,12 @@ def main() -> None:
                 )
 
         model, version = d.get("model"), d.get("version")
-        family = FAMILY_LABELS.get((model, version))
+        if model == "cogvideox":
+            # CogVideoX and CogVideoX1.5 share model="cogvideox"/version="";
+            # the 1.5 checkpoints carry a "1_5" size prefix.
+            family = "CogVideoX1.5" if (d.get("size") or "").startswith("1_5") else "CogVideoX"
+        else:
+            family = FAMILY_LABELS.get((model, version))
         if family is None:
             raise ValueError(f"{raw_slug}: no FAMILY_LABELS entry for (model={model!r}, version={version!r})")
         size_label = SIZE_LABELS.get(raw_slug)

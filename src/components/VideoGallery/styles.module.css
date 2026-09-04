@@ -25,41 +25,61 @@
   border-bottom-color: var(--ifm-color-primary);
 }
 
+/* Full-gallery grids (used on /gallery). */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.25rem;
 }
 
-/* I2V clips are all portrait -- 4 narrower columns (2 rows for the current
-   5 clips; extra slots stay empty in the grid until more results land) so
-   each card's box matches the video instead of being padded like a 16:9
-   T2V card. */
 .gridPortrait {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.25rem;
 }
 
-@media (max-width: 900px) {
-  .gridPortrait {
+/* Homepage preview grids: a fixed 3×3 (T2V) and 2×4 (I2V). */
+.gridT2vPreview {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.gridI2vPreview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 996px) {
+  .gridPortrait,
+  .gridI2vPreview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .gridT2vPreview {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 480px) {
-  .gridPortrait {
+@media (max-width: 560px) {
+  .gridPortrait,
+  .gridI2vPreview,
+  .gridT2vPreview {
     grid-template-columns: 1fr;
   }
 }
 
 .card {
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--ifm-color-emphasis-300);
   border-radius: 12px;
   overflow: hidden;
   background: var(--ifm-background-surface-color);
 }
 
+/* Every clip is cropped to a single per-task aspect ratio (set inline in
+   index.tsx) -- cover, not contain, so the box is always filled. */
 .video {
   width: 100%;
   display: block;
@@ -69,6 +89,8 @@
 
 .meta {
   padding: 0.75rem 0.9rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .metaTop {
@@ -76,26 +98,57 @@
   justify-content: space-between;
   align-items: baseline;
   gap: 0.5rem;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.3rem;
 }
 
 .modelName {
   font-weight: 700;
   font-size: 0.95rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .resolution {
   font-size: 0.8rem;
   opacity: 0.7;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
+/* Clamp to 3 lines AND reserve 3 lines' height, so a 2-line and a 3-line
+   description produce cards of identical height and every row aligns. */
 .description {
   font-size: 0.85rem;
+  line-height: 1.4;
   opacity: 0.75;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+  min-height: calc(0.85rem * 1.4 * 3);
+}
+
+/* Long flat "see the rest" button, exactly as wide as the video row. */
+.moreButton {
+  display: block;
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 0.85rem 1rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 10px;
+  background: var(--ifm-background-surface-color);
+  color: var(--ifm-font-color-base);
+}
+
+.moreButton:hover {
+  text-decoration: none;
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
+  background: var(--ifm-color-emphasis-100);
 }

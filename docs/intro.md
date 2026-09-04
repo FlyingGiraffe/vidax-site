@@ -9,11 +9,12 @@ title: Introduction
 weight translator for modern Video Diffusion Transformers (DiTs) and beyond.
 Built for **Google Cloud TPUs (v4, v5e, v6e)**, it eliminates framework
 overhead with clean, explicit PyTree architectures and native multi-chip
-parallelism for six model families spanning three genuinely different
-architectures — DiTs (**Wan 2.1 / 2.2**, **Cosmos-Predict2.5**,
-**LTX-Video**, **LTX-2.5**), an omnimodal Mixture-of-Transformers
-(**Cosmos 3**), and a dual-stream/single-stream MMDiT
-(**HunyuanVideo-1.5**).
+parallelism for eight model families spanning several genuinely different
+architectures — cross-attention DiTs (**Wan 2.1 / 2.2**,
+**Cosmos-Predict2.5**, **LTX-Video**, **LTX-2.5**), an omnimodal
+Mixture-of-Transformers (**Cosmos 3**), dual-stream/single-stream MMDiTs
+(**HunyuanVideo 1.0** and **HunyuanVideo-1.5**), and a single
+joint-attention DiT (**CogVideoX / CogVideoX1.5**).
 
 :::info Source of truth
 This site's docs are adapted from [`vidax/README.md`](https://github.com/FlyingGiraffe/vidax/blob/main/README.md)
@@ -48,10 +49,14 @@ claims; this site never edits that repo, only reads from it.
   cross-attention, per-token/per-frame latent substitution, and
   conditioning-mask channels all show up where the reference actually uses
   them.
-- **Broad, growing model coverage** — DiTs (Wan 2.1/2.2, Cosmos-Predict2.5,
-  LTX-Video, LTX-2.5), Cosmos 3's architecturally distinct omnimodal
-  Mixture-of-Transformers, and HunyuanVideo-1.5's dual-stream/single-stream
-  MMDiT.
+- **Broad, growing model coverage** — cross-attention DiTs (Wan 2.1/2.2,
+  Cosmos-Predict2.5, LTX-Video, LTX-2.5), Cosmos 3's architecturally
+  distinct omnimodal Mixture-of-Transformers, the HunyuanVideo 1.0 / 1.5
+  dual-stream/single-stream MMDiTs, and CogVideoX's single joint-attention
+  DiT.
+- **Reusable building blocks** — the flash-attention kernel, schedulers,
+  and PyTorch→JAX translator are usable standalone. See the
+  [API Reference](./api/index.md).
 
 ## Model support
 
@@ -67,11 +72,13 @@ genuinely distinct checkpoints (e.g. Wan2.1's T2V vs. I2V, Wan2.2's A14B).
 | Wan2.2 | TI2V-5B | T2V / I2V | [wan2_2](./models/wan2_2.md) |
 | Cosmos-Predict2.5 | 2B / 14B | T2V / I2V / V2V | [cosmos2_5](./models/cosmos2_5.md) |
 | Cosmos3 | Nano (16B) / Edge (4B) | T2V / I2V | [cosmos3](./models/cosmos3.md) |
-| LTX-Video (0.9.8) | 2B / 13B | T2V / I2V | [ltx_video](./models/ltx_video.md) |
+| LTX-Video (0.9.8) | 2B / 13B (dev/distilled) | T2V / I2V | [ltx_video](./models/ltx_video.md) |
 | LTX-2.5 | 22B (dev/distilled) | T2V / I2V | [ltx2_5](./models/ltx2_5.md) |
 | HunyuanVideo-1.5 | 8.3B (480p/720p) | T2V / I2V | [hunyuan_video_1_5](./models/hunyuan_video_1_5.md) |
+| HunyuanVideo (1.0) | 13B | T2V / I2V | [hunyuan_video](./models/hunyuan_video.md) |
+| CogVideoX / CogVideoX1.5 | 2B / 5B | T2V / I2V | [cogvideox](./models/cogvideox.md) |
 
-More model families are on the roadmap (HunyuanVideo, CogVideoX) — see the
+See the
 [main vidax README](https://github.com/FlyingGiraffe/vidax#-model-support)
 for the up-to-date table, and the [Benchmark Explorer](/benchmarks) for
 measured latency/memory numbers across every implemented row above.

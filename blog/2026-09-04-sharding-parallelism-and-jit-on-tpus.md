@@ -3,7 +3,7 @@ slug: hardware-and-sharding
 title: "Sharding, parallelism, and JIT compilation on TPUs, with JAX"
 authors: [vidax-team]
 tags: [engineering-notes, infrastructure]
-date: 2026-08-10
+date: 2026-09-04
 description: >-
   A gentle background on Megatron-style tensor parallelism, DeepSpeed-Ulysses
   sequence parallelism, and how jax.jit really compiles a loop — illustrated
@@ -114,6 +114,19 @@ The two compose: `build_tpu_mesh` builds a 3-axis `(dp, tp, sp)` mesh, and
 vidax's larger models (Wan2.2's A14B) need both at once, since one axis
 alone doesn't shard enough of *either* weights or activations to fit.
 
+CogVideoX-1.5 is a second, trickier user of sequence parallelism. Its
+block has no separate cross-attention: text and video tokens sit in **one
+joint self-attention sequence**, so you can't just `all_to_all` the whole
+thing — the 226 replicated text tokens would be reshuffled too. The port
+(`sequence_parallel_joint_self_attention`) instead sends only the visual
+q/k/v through the head↔sequence all-to-all and slices the replicated text
+q/k/v down to each device's local head range before one local attention
+call. That's what runs CogVideoX-1.5 at its native 1360×768 (~45k visual
+tokens), whose per-block activations don't fit a v4 chip otherwise — and
+for CogVideoX the two schemes are mutually exclusive, because the 5B DiT's
+weights fit replicated per chip and the port never threads weight-sharding
+through the sequence-parallel path.
+
 ## JIT compilation: what `jax.jit` actually does to a loop
 
 `jax.jit` doesn't compile your Python function — it **traces** it once
@@ -200,10 +213,15 @@ model in vidax.
 HunyuanVideo-1.5's VAE decoder ran into a version of this too — its
 decode OOM'd on a full-resolution run with peak memory that didn't add up
 to any single layer's own compute, the same "one fused trace doesn't free
-each stage's intermediates before the next starts" signature. It doesn't
-yet have the chunked-decode escape hatch Wan's/Cosmos's VAEs do — currently
-worked around by reducing frame count, with the real chunked-decode fix
-still open. **TODO: write this one up properly once it lands.**
+each stage's intermediates before the next starts" signature. The fix that
+landed is the same shape as all the others: on top of the spatial tiling
+the reference VAE already does (latent-space H/W tiles with a linear
+cross-fade of the overlaps), each tile is now decoded through a
+*per-decoder-block staged pipeline* — `decode_stage_level_block` /
+`decode_stage_level_upsample`, each its own `jax.jit` call — so one
+stage's temporaries are freed before the next stage runs, instead of the
+whole decode being one fused trace. That got the reference's real
+121-frame/480p default decoding within budget.
 
 ## Summary
 

@@ -17,12 +17,12 @@ export default function Home(): React.ReactElement {
       <main>
         <section className={styles.section}>
           <Heading as="h2">Showcase</Heading>
-          <VideoGallery />
+          <VideoGallery preview moreHref="/gallery" />
         </section>
 
         <section className={styles.section}>
           <Heading as="h2">Benchmark Explorer</Heading>
-          <BenchmarkExplorer />
+          <BenchmarkExplorer compact />
         </section>
 
         <CitationFooter />

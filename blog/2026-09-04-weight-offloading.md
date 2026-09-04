@@ -3,11 +3,11 @@ slug: weight-offloading
 title: "Weight offloading: trading bandwidth for memory"
 authors: [vidax-team]
 tags: [engineering-notes, infrastructure]
-date: 2026-08-14
+date: 2026-09-04
 description: >-
   What weight offloading is, why it exists (ZeRO-Offload), how vidax streams
   DiT weights from host RAM into HBM one chunk at a time, and what it
-  actually costs — across four different model families, including one
+  actually costs — across five different model families, including one
   case where the same tool turned out to be the wrong one.
 ---
 
@@ -110,7 +110,7 @@ but not all of that gap:
 configs that don't fit any other way, not a free option to reach for by
 default.** It's the last lever to pull, after sharding, not the first.
 
-## The same idea, four different forms
+## The same idea, five different forms
 
 ### Wan2.1: fixing an OOM that wasn't where it looked
 
@@ -156,6 +156,24 @@ it) — a single DiT with no MoE-style expert switching to compose with,
 so the implementation is close to the offloading loop shown above,
 essentially unmodified. With offloading, the full 93 frames run
 comfortably at 14.7GB peak HBM/chip.
+
+### HunyuanVideo 1.0: two chunk pools, one model
+
+HunyuanVideo 1.0's 13B DiT needs offloading to fit the reference's real
+129-frame / 720p default in HBM at all — a plain fit-the-sampling-loop case
+like Wan2.1 and Cosmos above. The wrinkle is architectural: this DiT is a
+dual-stream / single-stream MMDiT, 20 "double-stream" blocks followed by 40
+"single-stream" blocks, and the two block types have **different parameter
+shapes**. One chunk pool can't stream both. So `--offload_dit_weights`
+runs *two* independent chunk loops — `--offload_chunk_size_double` (default
+20, i.e. all double blocks in one chunk) and `--offload_chunk_size_single`
+(default 40) — each its own separately-compiled `chunk_apply`, streamed and
+freed in sequence. It's the same "jit the unit, stream one chunk at a time"
+machinery as every other model here, just instantiated once per block
+family instead of once for the whole stack. The per-step cost is dominated
+by this offloading tax, not the implementation — HunyuanVideo-1.5, the same
+block family with *zero* offloading, is already the slowest non-offloaded
+row in vidax's benchmark table.
 
 ### LTX-2.5: offloading for a reason no other model needed it
 

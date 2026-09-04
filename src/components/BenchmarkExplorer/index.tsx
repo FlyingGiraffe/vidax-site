@@ -56,7 +56,9 @@ const COLUMNS: (ColumnDef & { width: number })[] = [
   {
     key: 'model',
     label: ['Model'],
-    width: 20,
+    // Widest column: the longest label ("LTX-2.5 22B distilled, diffusion
+    // VAE") needs the room so it doesn't wrap to three lines.
+    width: 25,
     sortable: true,
     getValue: (r) => `${r.family} ${r.sizeLabel}`,
     render: (r) => `${r.family} ${r.sizeLabel}`,
@@ -64,7 +66,7 @@ const COLUMNS: (ColumnDef & { width: number })[] = [
   {
     key: 'task',
     label: ['Task'],
-    width: 8,
+    width: 6,
     sortable: true,
     getValue: (r) => r.task,
     render: (r) => r.task,
@@ -87,29 +89,31 @@ const COLUMNS: (ColumnDef & { width: number })[] = [
   {
     key: 'weightDtype',
     label: ['Weight', 'dtype'],
-    width: 9,
+    width: 8,
     sortable: false,
     render: (r) => r.weightDtype,
   },
   {
     key: 'ioDtype',
     label: ['I/O', 'dtype'],
-    width: 8,
+    width: 7,
     sortable: false,
     render: (r) => r.ioDtype,
   },
   {
     key: 'perStepS',
-    label: ['Denoising Latency', '(s/step)'],
-    width: 12,
+    // Shorter than the old "Denoising Latency (s/step)" so the column can
+    // be narrow; matches vidax's own docs/benchmarking.md wording.
+    label: ['Per-step', '(s)'],
+    width: 9,
     sortable: true,
     getValue: (r) => r.perStepS,
     render: (r) => fmt(r.perStepS, 3),
   },
   {
     key: 'wallS',
-    label: ['Wall Time', '(s)'],
-    width: 10,
+    label: ['Wall', '(s)'],
+    width: 9,
     sortable: true,
     getValue: (r) => r.wallS,
     render: (r) => fmt(r.wallS, 1),
@@ -117,7 +121,7 @@ const COLUMNS: (ColumnDef & { width: number })[] = [
   {
     key: 'fps',
     label: ['FPS'],
-    width: 7,
+    width: 8,
     sortable: true,
     getValue: (r) => r.fps,
     render: (r) => fmt(r.fps, 3),
@@ -125,7 +129,7 @@ const COLUMNS: (ColumnDef & { width: number })[] = [
   {
     key: 'peakHbmGb',
     label: ['Peak HBM', '(GB)'],
-    width: 7,
+    width: 9,
     sortable: true,
     getValue: (r) => r.peakHbmGb,
     render: (r) => fmt(r.peakHbmGb, 2),
@@ -135,7 +139,15 @@ const COLUMNS: (ColumnDef & { width: number })[] = [
 const DEFAULT_SORT_KEY = 'perStepS';
 const DEFAULT_SORT_ASC = true;
 
-export default function BenchmarkExplorer(): React.ReactElement {
+interface BenchmarkExplorerProps {
+  /** Homepage mode: cap the table body height and let it scroll, so the
+   * full 32-row table doesn't dominate the landing page. */
+  compact?: boolean;
+}
+
+export default function BenchmarkExplorer({
+  compact = false,
+}: BenchmarkExplorerProps): React.ReactElement {
   const families = useMemo(() => Array.from(new Set(ROWS.map((r) => r.family))).sort(), []);
   const devices = useMemo(
     () => Array.from(new Set(ROWS.map((r) => r.deviceKind).filter(Boolean))).sort() as string[],
@@ -241,7 +253,7 @@ export default function BenchmarkExplorer(): React.ReactElement {
         </button>
       </div>
 
-      <div className={styles.tableWrap}>
+      <div className={compact ? `${styles.tableWrap} ${styles.tableWrapCompact}` : styles.tableWrap}>
         <table className={styles.table}>
           <colgroup>
             {COLUMNS.map((col) => (
@@ -253,14 +265,34 @@ export default function BenchmarkExplorer(): React.ReactElement {
               {COLUMNS.map((col) => (
                 <th key={col.key}>
                   {col.sortable ? (
-                    <button className={styles.sortBtn} onClick={() => toggleSort(col.key)}>
+                    <button
+                      className={styles.sortBtn}
+                      onClick={() => toggleSort(col.key)}
+                      title={
+                        sortKey === col.key
+                          ? `Sorted by ${col.label.join(' ')} (${sortAsc ? 'ascending' : 'descending'}) — click to reverse`
+                          : `Click to sort by ${col.label.join(' ')}`
+                      }
+                    >
                       {col.label.map((line, i) => (
                         <React.Fragment key={line}>
                           {i > 0 && <br />}
                           {line}
                         </React.Fragment>
                       ))}
-                      {sortKey === col.key ? (sortAsc ? ' ▲' : ' ▼') : ''}
+                      {/* Every sortable header carries a triangle: a dim one
+                          on the columns you *can* sort by, a solid
+                          directional one on the column that's actually
+                          active. Without the dim marker there's no cue that
+                          the other headers are clickable at all. */}
+                      <span
+                        className={
+                          sortKey === col.key ? styles.sortActive : styles.sortInactive
+                        }
+                        aria-hidden="true"
+                      >
+                        {sortKey === col.key ? (sortAsc ? '▲' : '▼') : '▲'}
+                      </span>
                     </button>
                   ) : (
                     <span className={styles.headerLabel}>

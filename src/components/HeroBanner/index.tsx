@@ -5,10 +5,12 @@ import GitHubIcon from '@site/src/components/icons/GitHubIcon';
 import PaperIcon from '@site/src/components/icons/PaperIcon';
 import styles from './styles.module.css';
 
-// TODO: fill in the real arXiv link once the report is posted, and confirm
-// the pip package name/version once v0.1.0-alpha is actually published to PyPI.
+// TODO: fill in the real arXiv link once the report is posted.
 const ARXIV_URL = 'https://arxiv.org/abs/TODO';
-const PIP_INSTALL_CMD = 'pip install vidax==0.1.0a0';
+// TODO: the PyPI package isn't published yet -- the install row below is
+// commented out (not deleted). Restore it, with the real package name /
+// version, once vidax ships to PyPI.
+// const PIP_INSTALL_CMD = 'pip install vidax==0.1.0a0';
 
 export default function HeroBanner(): React.ReactElement {
   const { siteConfig } = useDocusaurusContext();
@@ -40,10 +42,12 @@ export default function HeroBanner(): React.ReactElement {
             Blog
           </Link>
         </div>
+        {/* TODO: restore once vidax is published to PyPI.
         <div className={styles.pipRow}>
           <span className={styles.pipLabel}>v0.1.0-alpha</span>
           <code className={styles.pipCode}>{PIP_INSTALL_CMD}</code>
         </div>
+        */}
       </div>
     </header>
   );

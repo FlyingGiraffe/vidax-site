@@ -56,6 +56,13 @@
   border-radius: 12px;
 }
 
+/* Homepage: keep the table to a scrollable window instead of ~32 full
+   rows. The sticky <thead> (below) stays pinned while the body scrolls. */
+.tableWrapCompact {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
 .table {
   width: 100%;
   table-layout: fixed;
@@ -103,6 +110,24 @@
 .headerLabel {
   font-size: 0.78rem;
   font-weight: 700;
+}
+
+/* Sort-direction triangle on the active sort column. */
+.sortActive {
+  margin-left: 0.3rem;
+  color: inherit;
+  font-size: 0.7rem;
+}
+
+/* Dim "you can sort by this" triangle on every other sortable column. */
+.sortInactive {
+  margin-left: 0.3rem;
+  color: var(--ifm-color-emphasis-400);
+  font-size: 0.7rem;
+}
+
+.sortBtn:hover .sortInactive {
+  color: var(--ifm-color-emphasis-600);
 }
 
 .empty {

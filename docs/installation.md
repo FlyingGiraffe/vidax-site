@@ -25,8 +25,8 @@ running:
 | Extra | Purpose | Needed by |
 | --- | --- | --- |
 | `tpu` | Correct TPU `jaxlib` wheel | Every model, on a TPU VM |
-| `torch` | Deserialize `.pth`/`.safetensors` checkpoints | Wan2.1, Wan2.2, Cosmos-Predict2.5, LTX-Video, LTX-2.5, HunyuanVideo-1.5 — **not** Cosmos3, which ships `.safetensors` loaded directly without `torch` |
-| `text` | Tokenizers (UMT5-XXL for Wan, Qwen2.5-VL/Qwen2Tokenizer for Cosmos, T5-XXL for LTX-Video, Gemma-4 for LTX-2.5, Qwen2.5-VL+byT5 for HunyuanVideo-1.5) | Every model |
+| `torch` | Deserialize `.pth`/`.safetensors` checkpoints | Every family **except** Cosmos3, which ships `.safetensors` loaded directly without `torch` |
+| `text` | Tokenizers (UMT5-XXL for Wan, Qwen2.5-VL/Qwen2Tokenizer for Cosmos, T5-XXL for LTX-Video and CogVideoX, Gemma-4 for LTX-2.5, Qwen2.5-VL+byT5 for HunyuanVideo-1.5, Llama-3/CLIP/LLaVA for HunyuanVideo 1.0) | Every model |
 | `i2v` | `pillow`, for image/video conditioning frames | Every model's I2V/image2world path |
 | `dev` | `pytest` + `pytest-xdist` | Running the test suite |
 
@@ -40,8 +40,9 @@ base package regardless.
 ## Checkpoints
 
 vidax loads the **original PyTorch/safetensors checkpoints** released by
-each model's authors (Wan-AI, NVIDIA) and translates them into Flax
-pytrees at load time — there are no separate vidax-hosted weights. See each
+each model's authors (Wan-AI, NVIDIA, Lightricks, Tencent, THUDM/ZhipuAI)
+and translates them into Flax pytrees at load time — there are no separate
+vidax-hosted weights. See each
 [model guide](./models/wan2_1.md) for the exact HuggingFace repo to
 download from, the expected checkpoint file layout, and which files come
 from which repo (some models, like Cosmos-Predict2.5, assemble their DiT,

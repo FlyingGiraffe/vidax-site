@@ -23,6 +23,8 @@ const sidebars: SidebarsConfig = {
         'models/ltx_video',
         'models/ltx2_5',
         'models/hunyuan_video_1_5',
+        'models/hunyuan_video',
+        'models/cogvideox',
       ],
     },
     {
@@ -32,6 +34,18 @@ const sidebars: SidebarsConfig = {
         'sharding/loading-pytorch-weights',
         'sharding/hardware-and-sharding',
         'sharding/weight-offloading',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'API Reference',
+      items: [
+        'api/index',
+        'api/attention',
+        'api/rope',
+        'api/sharding',
+        'api/schedulers',
+        'api/translator',
       ],
     },
   ],

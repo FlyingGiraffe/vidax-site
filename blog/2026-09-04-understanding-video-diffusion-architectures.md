@@ -3,14 +3,14 @@ slug: video-diffusion-architectures
 title: "Understanding video diffusion architectures: DiT, MoT, and conditioning"
 authors: [vidax-team]
 tags: [engineering-notes, modeling]
-date: 2026-08-17
+date: 2026-09-04
 description: >-
   A background primer on diffusion transformers, text/image conditioning,
   and Mixture-of-Transformers — and a tour of what each model family in
   vidax actually uses.
 ---
 
-vidax now ports seven model families, and no two of them make exactly the
+vidax now ports nine model families, and no two of them make exactly the
 same architectural choices. Rather than write a separate deep-dive per
 model, this is a tour of the handful of ideas that, combined differently,
 account for most of the differences: the Diffusion Transformer (DiT) itself,
@@ -71,17 +71,25 @@ and, for Cosmos-Predict2.5, *how many* of that encoder's layers get used
 
 ### The alternative: put conditioning tokens in the sequence, not a side branch
 
-Not every model uses cross-attention for text at all. HunyuanVideo-1.5
-instead **concatenates** its text tokens (from two separate towers — a
-7B vision-language model and a small glyph/color encoder — plus, for I2V,
-vision tokens) directly into the same self-attention sequence the video
-tokens live in, tagged by a learned per-source embedding so the model can
-tell which tokens came from where. There's no separate cross-attention
-sublayer at all — conditioning happens because every video token's
-self-attention already sees the text tokens sitting right next to it in
-the sequence. Cosmos3's MoT pathway (below) is a variant of this same
-idea: text and video tokens share one sequence, just processed by
-different weight sets depending which pathway they belong to.
+Not every model uses cross-attention for text at all. HunyuanVideo 1.0 and
+1.5 instead **concatenate** their text tokens directly into the same
+self-attention sequence the video tokens live in, tagged by a learned
+per-source embedding so the model can tell which tokens came from where. In
+1.5 that's two separate towers — a 7B vision-language model and a small
+glyph/color encoder — plus, for I2V, SigLIP vision tokens; 1.0 is simpler,
+a single Llama-3-8B tower's hidden states (with a separate pooled CLIP-L
+vector folded into the AdaLN modulation, not the sequence). Either way
+there's no separate cross-attention sublayer — conditioning happens because
+every video token's self-attention already sees the text tokens sitting
+right next to it in the sequence.
+
+CogVideoX takes the same idea to its minimal form: **one** joint
+self-attention per block over `[text (226 tokens); video]`, no
+cross-attention sublayer and no second tower — just T5-XXL text embeddings
+prepended to the video sequence, with RoPE applied to the video slice only.
+Cosmos3's MoT pathway (below) is another variant: text and video tokens
+share one sequence, just processed by different weight sets depending which
+pathway they belong to.
 
 ## Image/video conditioning (I2V)
 
@@ -147,6 +155,8 @@ video tokens once, then flows through ordinary pre-norm transformer blocks.
 | LTX-Video | DiT | T5-XXL cross-attention | Latent lerp + per-token effective-timestep clamp | Rectified Flow (LinearQuadratic Euler) |
 | LTX-2.5 | DiT, cross-attention AdaLN + gated attention | Gemma-4 (12B), via a learned connector | Per-token "denoise mask" (a generalized form of LTX-Video's clamp) | Ancestral (SDE) or plain Euler, by checkpoint |
 | HunyuanVideo-1.5 | Dual-stream/single-stream MMDiT | Qwen2.5-VL (7B) + byT5 glyph encoder, token concatenation | Channel-concat latent + SigLIP tokens, concatenated into the sequence | Rectified Flow (Euler) |
+| HunyuanVideo (1.0) | Dual-stream/single-stream MMDiT (same family as 1.5) | Llama-3-8B token concatenation + pooled CLIP-L into AdaLN | `token_replace`: latent substitution + a second "as-if-t=0" AdaLN vector for the first frame | Rectified Flow (Euler) |
+| CogVideoX / 1.5 | DiT, one joint `[text; video]` self-attention, per-sample AdaLN | T5-XXL, prepended to the sequence (no cross-attention) | Channel-concat image latent (→ 32 ch), every step | DDIM / DPM-Solver++ (v-prediction, zero-terminal-SNR) |
 
 LTX-2.5 also has a second, genuinely different VAE decoder option: instead
 of the usual deterministic convolutional decoder, `--vae_variant diffusion`
@@ -185,6 +195,19 @@ checking the conditioning path itself before spending time on CFG scale,
 guidance rescale, or precision — a weak signal produces exactly the kind
 of plausible-but-generic output that's easy to misread as a model-quality
 ceiling instead of a bug.
+
+**A bf16 text encoder is only safe if the padding is masked.** CogVideoX
+feeds its T5-XXL encoder no attention mask (the reference doesn't either),
+so the full 226-token padded sequence is attended. T5-XXL's residual
+stream reaches magnitudes around 1e5 — about two significant digits in
+bfloat16 — and over 24 layers × 226 unmasked positions the error compounds
+to 16–37% relative, with JAX-bf16 and torch-bf16 diverging from *each
+other* by that much too. Per-block parity against an fp32 input stays at
+~1e-7; it's purely the bf16 residual stream that blows up. LTX-Video never
+hit this because it always passes the mask, so the pad positions get a
+`-inf` bias and never enter the sum. The fix isn't bf16 parity — the
+reference is unstable in bf16 too — it's running that one-time prompt
+encode in float32 and casting only the output embeddings down.
 
 **Prompt formatting requirements matter more for smaller models.** Both
 Cosmos3 checkpoints document that prompts should be "upsampled" into a
