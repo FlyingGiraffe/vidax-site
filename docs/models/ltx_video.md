@@ -75,7 +75,7 @@ latent frame at `--conditioning_strength` (default `1.0` — the first frame
 the T5 encoder's weights. Needed for the 13B checkpoints regardless of
 resolution (their bf16 weights alone don't fit replicated on a single TPU
 v4 chip's HBM) — and, less obviously, needed for **2B too** at the
-reference's full 704x1216/121-frame resolution, where the self-attention
+reference's full 1216x704/121-frame resolution, where the self-attention
 activations alone don't fit at `tp=1`. There is no `--sequence_parallel_size`
 yet for this model family.
 

@@ -167,7 +167,7 @@ correctness bugs found porting vidax's models.
 
 **14B**: same translator mapping, DiT architecture, and sampling loop as
 2B, just wider/deeper — verified end-to-end at full resolution and step
-count (704×1280, 93 frames, 35 steps) with `--tensor_parallel_size 4
+count (1280×704, 93 frames, 35 steps) with `--tensor_parallel_size 4
 --offload_dit_weights --offload_chunk_size 1`: 5 full benchmark runs, 48.5s
 compile, 4479.6s generation, 128.0s/step, **14.7GB** peak HBM/chip.
 

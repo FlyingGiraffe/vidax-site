@@ -41,11 +41,17 @@ I2V_RESOLUTION_OVERRIDES = {
     "wan2_2_5b-ti2v_i2v": "800x1088",
     "wan2_2_a14b_i2v": "544x720",
     "wan2_2_a14b_720p_i2v": "832x1104",
-    # CogVideoX I2V derives its output size from the conditioning image, so
-    # the recorded `resolution` (the T2V config value) is not what was
-    # rendered -- these are measured from vidax/out/<slug>/<slug>_1.mp4.
-    "cogvideox_5b_i2v": "512x672",
-    "cogvideox_1_5_5b_i2v": "896x1184",
+    # CogVideoX-5b-I2V and CogVideoX1.5-5B-I2V are locked by a learned
+    # positional-embedding buffer to one fixed generation resolution -- the
+    # same one their T2V sibling uses -- so unlike every other I2V row here,
+    # these are NOT measured from the rendered output video (which
+    # `--match_image_aspect` rescales to the conditioning image's own aspect
+    # ratio afterward, e.g. to 512x672 / 896x1184 for this repo's
+    # standardized conditioning image). Use the fixed generation resolution
+    # instead, matching vidax/docs/benchmarking.md's convention and its `‡`
+    # footnote.
+    "cogvideox_5b_i2v": "720x480",
+    "cogvideox_1_5_5b_i2v": "1360x768",
     # HunyuanVideo (1.0 & 1.5) I2V records "NonexNone"; measured from the
     # run-1 output video.
     "hunyuan_video1_5_480p_i2v": "544x720",

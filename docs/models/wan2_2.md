@@ -88,7 +88,7 @@ python examples/generate_wan2_2_ti2v.py \
 | `--fps` | `24` | vs. 16 for Wan2.1/A14B. |
 
 :::info Parallelism note
-At TI2V-5B's only supported resolution (704×1280, 121 frames), the
+At TI2V-5B's only supported resolution (1280×704, 121 frames), the
 patch-token sequence is ~27k long, and Wan2.2's per-token AdaLN modulation
 scales with that directly. Which mesh axis actually matters depends on
 `--dit_dtype`: with the correct `float32` default, the ~5B DiT's fp32
@@ -102,7 +102,7 @@ but OOMs inside the DiT sampling step). See
 :::
 
 **Status:** verified end-to-end for **both** t2v and i2v, at the full
-reference resolution/frame count (704×1280, 121 frames) and full step count
+reference resolution/frame count (1280×704, 121 frames) and full step count
 (50 t2v / 40 i2v), 5 full benchmark runs each, no OOM, ~18.3GB peak
 HBM/chip — see the [Benchmark Explorer](/benchmarks).
 
@@ -157,8 +157,8 @@ python examples/generate_wan2_2_t2v_a14b.py \
 | `--sequence_parallel_size` | `1` | Worth trying together with `--tensor_parallel_size` at resolutions where even one device-resident expert doesn't fit alone. |
 | `--shift` | `12.0` | Reference default for A14B T2V. |
 | `--height` / `--width` | `720` / `1280` | At native resolution, the full reference frame count doesn't fit this 4-chip machine even with offloading + sequence parallelism — reduce `--num_frames`. |
-| `--num_frames` | `81` | Reduce to `33` at native 720×1280 (the largest that fits — see [Weight Offloading](/blog/weight-offloading)). |
-| `--offload_dit_weights` / `--offload_chunk_size` | off / `1` | Composed with the two-expert switch **and** with `--sequence_parallel_size > 1`. At native 720×1280, only `1` fits; at 480×832, `10` fits. |
+| `--num_frames` | `81` | Reduce to `33` at native 1280×720 (the largest that fits — see [Weight Offloading](/blog/weight-offloading)). |
+| `--offload_dit_weights` / `--offload_chunk_size` | off / `1` | Composed with the two-expert switch **and** with `--sequence_parallel_size > 1`. At native 1280×720, only `1` fits; at 832×480, `10` fits. |
 
 **Status:** verified end-to-end against real checkpoints (both experts,
 weight shapes/keys confirmed to exactly match `T2V_A14B_CONFIG`). Full

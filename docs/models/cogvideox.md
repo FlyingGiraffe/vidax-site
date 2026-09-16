@@ -176,12 +176,22 @@ Verified end-to-end against real checkpoints, every variant. Selected
 | --- | --- | --- | ---: | ---: | --- | ---: | ---: |
 | 2B | T2V | 720×480 | 49 | 50 | `tp=2`, `dp=2` | 4.2 | 17.2 |
 | 5B | T2V | 720×480 | 49 | 50 | `tp=4` | 9.4 | 23.2 |
-| 5B | I2V | 512×672 | 49 | 50 | `tp=4` | 9.4 | 23.3 |
+| 5B | I2V | 720×480\* | 49 | 50 | `tp=4` | 9.4 | 23.3 |
 | 1.5-5B | T2V | 1360×768 | 81 | 50 | `sp=4` | 52.8 | 31.5 |
-| 1.5-5B | I2V | 896×1184 | 81 | 50 | `sp=4` | 52.8 | 31.5 |
+| 1.5-5B | I2V | 1360×768\* | 81 | 50 | `sp=4` | 52.8 | 31.5 |
 
 The 1.5 rows sit right at the v4's ~31.5 GB HBM ceiling — a larger frame
 count would also need weight offloading.
+
+\* Both I2V checkpoints are locked by a learned positional-embedding buffer
+to one fixed generation resolution — the same one their T2V sibling uses —
+so unlike every other I2V row in the [Benchmark Explorer](/benchmarks),
+their output isn't derived from the conditioning image's aspect ratio. The
+conditioning image is resized into that fixed box, the video is generated
+there, and by default (`--match_image_aspect`, on) the rendered video is
+then rescaled back to the conditioning image's own aspect ratio afterward
+(e.g. to 512×672 / 896×1184 for this repo's standardized conditioning
+image) — see [Image-to-video](#image-to-video) above.
 
 ---
 

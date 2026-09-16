@@ -193,7 +193,7 @@ e.g. `--height 480 --width 832 --num_frames 50 --num_steps 35`.
 
 **Both sizes verified: clean, stable, high-quality output** — Nano at its
 full resolution (1280×704, 93 frames, 35 steps), Edge at its real per-task
-recipe (480×832, 121 frames, non-Karras; T2V: 35 steps/`shift=10.0`, I2V:
+recipe (832×480, 121 frames, non-Karras; T2V: 35 steps/`shift=10.0`, I2V:
 20 steps/`shift=12.0`), **with a properly JSON-structured prompt** (see
 [Prompting](#prompting) — this matters far more for Edge than for Nano).
 
