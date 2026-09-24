@@ -6,6 +6,37 @@
 
 .sectionSub {
   opacity: 0.75;
+  margin-top: 1.25rem;
   margin-bottom: 1.5rem;
-  max-width: 700px;
+}
+
+.submitSection {
+  margin-top: 3rem;
+}
+
+.submitIntro {
+  margin-bottom: 1.25rem;
+}
+
+.submitCard {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.submitActions {
+  margin-bottom: 1.25rem;
+}
+
+.schemaIntro {
+  opacity: 0.8;
+  margin-bottom: 0.75rem;
+}
+
+.schemaBlock {
+  background: var(--ifm-color-emphasis-100);
+  border-radius: 8px;
+  padding: 1rem;
+  overflow-x: auto;
+  font-size: 0.8rem;
 }

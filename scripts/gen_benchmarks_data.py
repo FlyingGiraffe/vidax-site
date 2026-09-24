@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
-"""Regenerate src/data/benchmarks.json from vidax/benchmarks/results/*.json.
+"""Regenerate src/data/benchmarks.json from vidax/benchmarks/results/*.json,
+plus community_benchmarks.json (this directory).
 
 Read-only with respect to the vidax/ repo -- this script only reads files
 under ../vidax/benchmarks/results/ and writes into this site's own
 src/data/benchmarks.json. Run it again any time vidax's benchmark results
 change (e.g. after the Cosmos2.5 14B re-run finishes, or once v5e/v6e/fp8
 rows are added).
+
+community_benchmarks.json holds community-submitted rows (different
+hardware, own contributor/numRuns) by hand -- it's the only place those
+rows live, so add new ones there directly (matching the BenchmarkRow shape
+in src/components/BenchmarkExplorer/index.tsx) rather than editing
+src/data/benchmarks.json, which this script overwrites wholesale.
 
 Usage:
     python3 scripts/gen_benchmarks_data.py [--vidax-repo PATH]
@@ -15,6 +22,15 @@ import argparse
 import glob
 import json
 import os
+
+# Every row generated from vidax/benchmarks/results/*.json is one of the
+# maintainer's own runs (5-run-averaged, see vidax/docs/benchmarking.md) --
+# attribute them all to this default. Community-submitted numbers (different
+# hardware, not necessarily 5-run-averaged) don't come from that results
+# dir at all; they're curated by hand into community_benchmarks.json
+# (next to this script) and merged in below, each row carrying its own
+# contributor/contributorUrl/numRuns exactly as submitted.
+DEFAULT_CONTRIBUTOR = ("FlyingGiraffe", "https://github.com/FlyingGiraffe")
 
 # Legacy result filenames that predate a later naming convention change in
 # the vidax repo -- mapped to the slug this site displays instead. Update
@@ -164,13 +180,17 @@ SIZE_LABELS = {
     "hunyuan_video1_5_720p_i2v": "8.3B (720p)",
     "hunyuan_video_720p_t2v": "13B",
     "hunyuan_video_720p_i2v": "13B",
-    "ltx_video0_9_8_2b_distilled_t2v": "2B distilled",
-    "ltx_video0_9_8_13b_dev_t2v": "13B dev",
-    "ltx_video0_9_8_13b_distilled_t2v": "13B distilled",
-    "ltx2_5_22b_dev_t2v": "22B dev",
-    "ltx2_5_22b_distilled_t2v": "22B distilled",
-    "ltx2_5_22b_dev_diffvae_t2v": "22B dev, diffusion VAE",
-    "ltx2_5_22b_distilled_diffvae_t2v": "22B distilled, diffusion VAE",
+    # Variant qualifiers are parenthesized after the size, matching the
+    # convention every other family already uses (e.g. Cosmos3's
+    # "Nano (16B)", HunyuanVideo-1.5's "8.3B (480p)") -- these were the
+    # site's only bare, unparenthesized suffixes.
+    "ltx_video0_9_8_2b_distilled_t2v": "2B (distilled)",
+    "ltx_video0_9_8_13b_dev_t2v": "13B (dev)",
+    "ltx_video0_9_8_13b_distilled_t2v": "13B (distilled)",
+    "ltx2_5_22b_dev_t2v": "22B (dev)",
+    "ltx2_5_22b_distilled_t2v": "22B (distilled)",
+    "ltx2_5_22b_dev_diffvae_t2v": "22B (dev, diffusion VAE)",
+    "ltx2_5_22b_distilled_diffvae_t2v": "22B (distilled, diffusion VAE)",
 }
 
 
@@ -257,8 +277,20 @@ def main() -> None:
                 "wallS": r(wall_s, 2),
                 "peakHbmGb": r(avg.get("peak_hbm_gb"), 2),
                 "fps": r(num_frames / wall_s, 3) if (num_frames and wall_s) else None,
+                "contributor": DEFAULT_CONTRIBUTOR[0],
+                "contributorUrl": DEFAULT_CONTRIBUTOR[1],
             }
         )
+
+    community_path = os.path.join(here, "community_benchmarks.json")
+    with open(community_path) as f:
+        community_rows = json.load(f)
+    required_keys = set(rows[0].keys()) if rows else set()
+    for row in community_rows:
+        missing = required_keys - set(row.keys())
+        if missing:
+            raise ValueError(f"{community_path}: row {row.get('slug')!r} is missing keys {missing}")
+    rows.extend(community_rows)
 
     rows.sort(key=lambda x: (x["family"], x["version"] or "", x["slug"]))
 

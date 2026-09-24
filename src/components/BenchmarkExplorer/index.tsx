@@ -29,6 +29,12 @@ interface BenchmarkRow {
   wallS: number | null;
   peakHbmGb: number | null;
   fps: number | null;
+  // Community-submitted rows aren't run to the same standard as vidax's own
+  // (5-run-averaged) numbers -- `numRuns` says how many runs a row's
+  // averaged from so readers can judge noise, rather than the table
+  // silently implying every row meets the same bar.
+  contributor: string | null;
+  contributorUrl: string | null;
 }
 
 const ROWS = benchmarksData as BenchmarkRow[];
@@ -39,6 +45,12 @@ interface ColumnDef {
   key: string;
   label: string[];
   sortable: boolean;
+  // Left-aligned text in a column wider than its content leaves a big gap
+  // trailing the text but not leading it, reading as an unbalanced margin
+  // -- true for every short/uniform value here (a task code, a dtype, a
+  // number) except the two name-like columns (Model, Contributor), which
+  // stay left-aligned since they're read as text, not a value to scan.
+  align?: 'left' | 'center';
   getValue?: (r: BenchmarkRow) => SortValue;
   render: (r: BenchmarkRow) => React.ReactNode;
 }
@@ -58,7 +70,7 @@ const COLUMNS: (ColumnDef & { width: number })[] = [
     label: ['Model'],
     // Widest column: the longest label ("LTX-2.5 22B distilled, diffusion
     // VAE") needs the room so it doesn't wrap to three lines.
-    width: 25,
+    width: 21,
     sortable: true,
     getValue: (r) => `${r.family} ${r.sizeLabel}`,
     render: (r) => `${r.family} ${r.sizeLabel}`,
@@ -66,38 +78,43 @@ const COLUMNS: (ColumnDef & { width: number })[] = [
   {
     key: 'task',
     label: ['Task'],
-    width: 6,
+    width: 5,
     sortable: true,
+    align: 'center',
     getValue: (r) => r.task,
     render: (r) => r.task,
   },
   {
     key: 'resolution',
     label: ['Resolution'],
-    width: 11,
+    width: 9,
     sortable: true,
+    align: 'center',
     getValue: (r) => r.resolution ?? '',
     render: (r) => r.resolution ?? '—',
   },
   {
     key: 'deviceKind',
     label: ['TPU'],
-    width: 8,
+    width: 7,
     sortable: false,
+    align: 'center',
     render: (r) => r.deviceKind ?? '—',
   },
   {
     key: 'weightDtype',
     label: ['Weight', 'dtype'],
-    width: 8,
+    width: 7,
     sortable: false,
+    align: 'center',
     render: (r) => r.weightDtype,
   },
   {
     key: 'ioDtype',
     label: ['I/O', 'dtype'],
-    width: 7,
+    width: 6,
     sortable: false,
+    align: 'center',
     render: (r) => r.ioDtype,
   },
   {
@@ -105,34 +122,69 @@ const COLUMNS: (ColumnDef & { width: number })[] = [
     // Shorter than the old "Denoising Latency (s/step)" so the column can
     // be narrow; matches vidax's own docs/benchmarking.md wording.
     label: ['Per-step', '(s)'],
-    width: 9,
+    width: 8,
     sortable: true,
+    align: 'center',
     getValue: (r) => r.perStepS,
     render: (r) => fmt(r.perStepS, 3),
   },
   {
     key: 'wallS',
     label: ['Wall', '(s)'],
-    width: 9,
+    width: 8,
     sortable: true,
+    align: 'center',
     getValue: (r) => r.wallS,
     render: (r) => fmt(r.wallS, 1),
   },
   {
     key: 'fps',
     label: ['FPS'],
-    width: 8,
+    width: 7,
     sortable: true,
+    align: 'center',
     getValue: (r) => r.fps,
     render: (r) => fmt(r.fps, 3),
   },
   {
     key: 'peakHbmGb',
     label: ['Peak HBM', '(GB)'],
-    width: 9,
+    width: 8,
     sortable: true,
+    align: 'center',
     getValue: (r) => r.peakHbmGb,
     render: (r) => fmt(r.peakHbmGb, 2),
+  },
+  {
+    key: 'numRuns',
+    // Community rows aren't held to vidax's own 5-run-averaged standard, so
+    // this is what lets readers judge how noisy a given number might be
+    // instead of assuming every row was measured the same way.
+    label: ['Runs'],
+    width: 5,
+    sortable: true,
+    align: 'center',
+    getValue: (r) => r.numRuns,
+    render: (r) => (r.numRuns === null || r.numRuns === undefined ? '—' : String(r.numRuns)),
+  },
+  {
+    key: 'contributor',
+    label: ['Contributor'],
+    width: 9,
+    sortable: true,
+    getValue: (r) => r.contributor ?? '',
+    render: (r) =>
+      r.contributor ? (
+        r.contributorUrl ? (
+          <a href={r.contributorUrl} target="_blank" rel="noopener noreferrer">
+            {r.contributor}
+          </a>
+        ) : (
+          r.contributor
+        )
+      ) : (
+        '—'
+      ),
   },
 ];
 
@@ -274,10 +326,11 @@ export default function BenchmarkExplorer({
           <thead>
             <tr>
               {COLUMNS.map((col) => (
-                <th key={col.key}>
+                <th key={col.key} style={col.align ? { textAlign: col.align } : undefined}>
                   {col.sortable ? (
                     <button
                       className={styles.sortBtn}
+                      style={col.align ? { textAlign: col.align } : undefined}
                       onClick={() => toggleSort(col.key)}
                       title={
                         sortKey === col.key
@@ -306,7 +359,10 @@ export default function BenchmarkExplorer({
                       </span>
                     </button>
                   ) : (
-                    <span className={styles.headerLabel}>
+                    <span
+                      className={styles.headerLabel}
+                      style={col.align ? { textAlign: col.align } : undefined}
+                    >
                       {col.label.map((line, i) => (
                         <React.Fragment key={line}>
                           {i > 0 && <br />}
@@ -323,7 +379,9 @@ export default function BenchmarkExplorer({
             {rows.map((r) => (
               <tr key={r.slug}>
                 {COLUMNS.map((col) => (
-                  <td key={col.key}>{col.render(r)}</td>
+                  <td key={col.key} style={col.align ? { textAlign: col.align } : undefined}>
+                    {col.render(r)}
+                  </td>
                 ))}
               </tr>
             ))}

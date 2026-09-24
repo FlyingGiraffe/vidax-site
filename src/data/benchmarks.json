@@ -21,7 +21,9 @@
     "perStepS": 4.23,
     "wallS": 519.18,
     "peakHbmGb": 17.18,
-    "fps": 0.094
+    "fps": 0.094,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "cogvideox_5b_i2v",
@@ -45,7 +47,9 @@
     "perStepS": 9.413,
     "wallS": 851.15,
     "peakHbmGb": 23.33,
-    "fps": 0.058
+    "fps": 0.058,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "cogvideox_5b_t2v",
@@ -69,7 +73,9 @@
     "perStepS": 9.413,
     "wallS": 835.27,
     "peakHbmGb": 23.18,
-    "fps": 0.059
+    "fps": 0.059,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "cogvideox_1_5_5b_i2v",
@@ -93,7 +99,9 @@
     "perStepS": 52.796,
     "wallS": 3400.79,
     "peakHbmGb": 31.45,
-    "fps": 0.024
+    "fps": 0.024,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "cogvideox_1_5_5b_t2v",
@@ -117,7 +125,9 @@
     "perStepS": 52.796,
     "wallS": 3380.16,
     "peakHbmGb": 31.46,
-    "fps": 0.024
+    "fps": 0.024,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "cosmos2_5_14b_t2v",
@@ -141,7 +151,9 @@
     "perStepS": 127.988,
     "wallS": 4577.11,
     "peakHbmGb": 14.7,
-    "fps": 0.02
+    "fps": 0.02,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "cosmos2_5_2b_t2v",
@@ -165,7 +177,9 @@
     "perStepS": 38.779,
     "wallS": 1497.28,
     "peakHbmGb": 16.03,
-    "fps": 0.062
+    "fps": 0.062,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "cosmos3_edge_t2v",
@@ -189,7 +203,9 @@
     "perStepS": 2.909,
     "wallS": 274.81,
     "peakHbmGb": 17.21,
-    "fps": 0.44
+    "fps": 0.44,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "cosmos3_nano_t2v",
@@ -213,7 +229,9 @@
     "perStepS": 7.141,
     "wallS": 437.51,
     "peakHbmGb": 29.49,
-    "fps": 0.213
+    "fps": 0.213,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "hunyuan_video_720p_i2v",
@@ -237,7 +255,9 @@
     "perStepS": 306.369,
     "wallS": 16007.44,
     "peakHbmGb": 18.41,
-    "fps": 0.008
+    "fps": 0.008,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "hunyuan_video_720p_t2v",
@@ -261,7 +281,9 @@
     "perStepS": 299.614,
     "wallS": 15620.67,
     "peakHbmGb": 18.4,
-    "fps": 0.008
+    "fps": 0.008,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "hunyuan_video1_5_480p_i2v",
@@ -285,7 +307,9 @@
     "perStepS": 112.88,
     "wallS": 3838.14,
     "peakHbmGb": 31.44,
-    "fps": 0.032
+    "fps": 0.032,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "hunyuan_video1_5_480p_t2v",
@@ -309,7 +333,9 @@
     "perStepS": 119.459,
     "wallS": 4015.23,
     "peakHbmGb": 29.14,
-    "fps": 0.03
+    "fps": 0.03,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "hunyuan_video1_5_720p_i2v",
@@ -333,7 +359,9 @@
     "perStepS": 219.186,
     "wallS": 7125.03,
     "peakHbmGb": 32.0,
-    "fps": 0.017
+    "fps": 0.017,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "hunyuan_video1_5_720p_t2v",
@@ -357,14 +385,16 @@
     "perStepS": 220.993,
     "wallS": 7133.48,
     "peakHbmGb": 30.28,
-    "fps": 0.017
+    "fps": 0.017,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "ltx2_5_22b_dev_diffvae_t2v",
     "family": "LTX-2.5",
     "version": "",
     "size": "22b_dev_diffvae",
-    "sizeLabel": "22B dev, diffusion VAE",
+    "sizeLabel": "22B (dev, diffVAE)",
     "task": "T2V",
     "resolution": "1216x704",
     "numFrames": 121,
@@ -381,14 +411,16 @@
     "perStepS": 95.32,
     "wallS": 3444.33,
     "peakHbmGb": 16.11,
-    "fps": 0.035
+    "fps": 0.035,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "ltx2_5_22b_dev_t2v",
     "family": "LTX-2.5",
     "version": "",
     "size": "22b_dev",
-    "sizeLabel": "22B dev",
+    "sizeLabel": "22B (dev)",
     "task": "T2V",
     "resolution": "1216x704",
     "numFrames": 121,
@@ -405,14 +437,16 @@
     "perStepS": 7.262,
     "wallS": 409.69,
     "peakHbmGb": 16.69,
-    "fps": 0.295
+    "fps": 0.295,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "ltx2_5_22b_distilled_diffvae_t2v",
     "family": "LTX-2.5",
     "version": "",
     "size": "22b_distilled_diffvae",
-    "sizeLabel": "22B distilled, diffusion VAE",
+    "sizeLabel": "22B (distilled, diffVAE)",
     "task": "T2V",
     "resolution": "1216x704",
     "numFrames": 121,
@@ -429,14 +463,16 @@
     "perStepS": 335.095,
     "wallS": 3247.36,
     "peakHbmGb": 14.76,
-    "fps": 0.037
+    "fps": 0.037,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "ltx2_5_22b_distilled_t2v",
     "family": "LTX-2.5",
     "version": "",
     "size": "22b_distilled",
-    "sizeLabel": "22B distilled",
+    "sizeLabel": "22B (distilled)",
     "task": "T2V",
     "resolution": "1216x704",
     "numFrames": 121,
@@ -453,14 +489,16 @@
     "perStepS": 4.663,
     "wallS": 214.98,
     "peakHbmGb": 15.35,
-    "fps": 0.563
+    "fps": 0.563,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "ltx_video0_9_8_13b_dev_t2v",
     "family": "LTX-Video",
     "version": "0.9.8",
     "size": "13b_dev",
-    "sizeLabel": "13B dev",
+    "sizeLabel": "13B (dev)",
     "task": "T2V",
     "resolution": "1216x704",
     "numFrames": 121,
@@ -477,14 +515,16 @@
     "perStepS": 5.2,
     "wallS": 347.59,
     "peakHbmGb": 15.27,
-    "fps": 0.348
+    "fps": 0.348,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "ltx_video0_9_8_13b_distilled_t2v",
     "family": "LTX-Video",
     "version": "0.9.8",
     "size": "13b_distilled",
-    "sizeLabel": "13B distilled",
+    "sizeLabel": "13B (distilled)",
     "task": "T2V",
     "resolution": "1216x704",
     "numFrames": 121,
@@ -501,14 +541,16 @@
     "perStepS": 13.028,
     "wallS": 300.57,
     "peakHbmGb": 15.27,
-    "fps": 0.403
+    "fps": 0.403,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "ltx_video0_9_8_2b_distilled_t2v",
     "family": "LTX-Video",
     "version": "0.9.8",
     "size": "2b_distilled",
-    "sizeLabel": "2B distilled",
+    "sizeLabel": "2B (distilled)",
     "task": "T2V",
     "resolution": "1216x704",
     "numFrames": 121,
@@ -525,7 +567,9 @@
     "perStepS": 5.916,
     "wallS": 162.62,
     "peakHbmGb": 8.84,
-    "fps": 0.744
+    "fps": 0.744,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "wan2_1_1.3b_t2v",
@@ -549,7 +593,9 @@
     "perStepS": 6.965,
     "wallS": 456.39,
     "peakHbmGb": 10.19,
-    "fps": 0.177
+    "fps": 0.177,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "wan2_1_14b_480p_i2v",
@@ -573,7 +619,9 @@
     "perStepS": 28.132,
     "wallS": 1372.13,
     "peakHbmGb": 22.08,
-    "fps": 0.059
+    "fps": 0.059,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "wan2_1_14b_480p_t2v",
@@ -597,7 +645,9 @@
     "perStepS": 26.136,
     "wallS": 1552.89,
     "peakHbmGb": 17.17,
-    "fps": 0.052
+    "fps": 0.052,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "wan2_1_14b_720p_i2v",
@@ -621,7 +671,9 @@
     "perStepS": 127.249,
     "wallS": 5651.55,
     "peakHbmGb": 32.7,
-    "fps": 0.014
+    "fps": 0.014,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "wan2_1_14b_720p_t2v",
@@ -645,7 +697,9 @@
     "perStepS": 123.011,
     "wallS": 6562.93,
     "peakHbmGb": 23.0,
-    "fps": 0.012
+    "fps": 0.012,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "wan2_2_5b-ti2v_i2v",
@@ -669,7 +723,9 @@
     "perStepS": 12.068,
     "wallS": 665.44,
     "peakHbmGb": 18.26,
-    "fps": 0.182
+    "fps": 0.182,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "wan2_2_5b-ti2v_t2v",
@@ -693,7 +749,9 @@
     "perStepS": 10.518,
     "wallS": 649.66,
     "peakHbmGb": 18.29,
-    "fps": 0.186
+    "fps": 0.186,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "wan2_2_a14b_720p_i2v",
@@ -717,7 +775,9 @@
     "perStepS": 49.062,
     "wallS": 2163.74,
     "peakHbmGb": 20.52,
-    "fps": 0.015
+    "fps": 0.015,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "wan2_2_a14b_i2v",
@@ -741,7 +801,9 @@
     "perStepS": 44.499,
     "wallS": 2063.17,
     "peakHbmGb": 28.35,
-    "fps": 0.039
+    "fps": 0.039,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   },
   {
     "slug": "wan2_2_a14b_t2v",
@@ -765,6 +827,8 @@
     "perStepS": 43.182,
     "wallS": 2408.18,
     "peakHbmGb": 28.38,
-    "fps": 0.034
+    "fps": 0.034,
+    "contributor": "FlyingGiraffe",
+    "contributorUrl": "https://github.com/FlyingGiraffe"
   }
 ]

@@ -79,7 +79,7 @@
 
 .table th,
 .table td {
-  padding: 0.5rem 0.5rem;
+  padding: 0.5rem 0.3rem;
   text-align: left;
   border-bottom: 1px solid var(--ifm-color-emphasis-200);
   overflow: hidden;
