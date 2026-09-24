@@ -266,7 +266,11 @@ def main() -> None:
                 "numSteps": d.get("num_steps"),
                 "jaxVersion": d.get("jax_version"),
                 "deviceKind": d.get("device_kind"),
-                "deviceCount": d.get("device_count"),
+                # vidax's own raw results only ever record a plain device
+                # count, never a real ICI topology shape -- stringified so
+                # it lines up with community rows that do supply one (e.g.
+                # "2x2x4" for a multi-chip pod slice).
+                "deviceTopology": str(d.get("device_count")) if d.get("device_count") is not None else None,
                 "tensorParallelSize": d.get("tensor_parallel_size"),
                 "sequenceParallelSize": d.get("sequence_parallel_size"),
                 "ioDtype": io_dtype,

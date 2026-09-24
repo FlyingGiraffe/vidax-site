@@ -26,7 +26,7 @@ const SCHEMA_EXAMPLE = `[
     "numSteps": 50,
     "jaxVersion": "0.11.0",
     "deviceKind": "TPU v7",
-    "deviceCount": 2,
+    "deviceTopology": "2x2x4",
     "tensorParallelSize": 2,
     "sequenceParallelSize": 1,
     "ioDtype": "bf16",

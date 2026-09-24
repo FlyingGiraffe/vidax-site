@@ -14,7 +14,9 @@ interface BenchmarkRow {
   numSteps: number | null;
   jaxVersion: string | null;
   deviceKind: string | null;
-  deviceCount: number | null;
+  // A plain count ("4") or, for a multi-chip pod slice, its ICI topology
+  // shape ("2x2x4") -- kept as a string since the latter isn't a number.
+  deviceTopology: string | null;
   tensorParallelSize: number | null;
   sequenceParallelSize: number | null;
   // I/O dtype is the compute dtype for activations/latents/VAE/text
